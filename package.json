@@ -1,7 +1,7 @@
 {
   "name": "dbclient",
   "version": "0.0.0",
-  "description": "Database client for Pelias",
+  "description": "Database client for Pelias import pipelines",
   "main": "index.js",
   "scripts": {
     "test": "node test/run.js | tap-spec"
