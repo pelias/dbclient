@@ -1,0 +1,32 @@
+{
+  "name": "dbclient",
+  "version": "0.0.0",
+  "description": "Database client for Pelias",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/run.js | tap-spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pelias/dbclient"
+  },
+  "keywords": [
+    "pelias",
+    "elasticsearch",
+    "client",
+    "stream"
+  ],
+  "author": "mapzen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pelias/dbclient/issues"
+  },
+  "homepage": "https://github.com/pelias/dbclient",
+  "devDependencies": {
+    "tape": "^2.13.4",
+    "tap-spec": "^0.2.0"
+  },
+  "dependencies": {
+    "through2": "^0.6.1"
+  }
+}
