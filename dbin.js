@@ -1,22 +1,10 @@
 
 var sink = require('./src/sink')();
-
-// var fs = require('fs'),
-//     readline = require('readline');
-
-// var rd = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout,
-//     terminal: false
-// });
-
 var byline = require('byline');
 var through = require('through2');
 
-// rd.on('line', function(line) {
-
 process.stdin.on( 'error', function(){
-  console.error('something fucked up', arguments);
+  console.error('something broke', arguments);
   process.exit(1);
 });
 
