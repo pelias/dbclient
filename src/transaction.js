@@ -50,12 +50,15 @@ function wrapper( client ){
 
       // update batch items with response status
       else {
+
+        // console.log( resp.items.length, batch._slots.length, payload.length );
+
         resp.items.forEach( function( item, i ){
 
           var action = item.hasOwnProperty('create') ? item.create : item.index;
 
           var task = batch._slots[i];
-          task.status = parseInt( action.status, 10 ) || 888;
+          batch._slots[i].status = parseInt( action.status, 10 ) || 888;
           // console.log( 'set task status', task.status, JSON.stringify( action, null, 2 ) );
 
           if( task.status > 201 ){

@@ -1,14 +1,23 @@
 
-var fields = 'host,ip,bulk.active,bulk.queue,bulk.rejected';
+var util = require('util'),
+    EventEmitter = require('events').EventEmitter;
+
+var fields = 'host,ip,bulk.active,bulk.queue,bulk.rejected,bulk.queueSize';
+// var fields = 'host,ip,bulk.type,bulk.size,bulk.active,bulk.queue,bulk.queueSize,bulk.rejected,bulk.largest,bulk.completed,bulk.min,bulk.max,bulk.keepAlive';
 
 function HealthCheck( client ){
+
+  EventEmitter.call(this);
+
   this._client = client;
   this._interval = undefined;
   this._status = { threadpool: new ThreadpoolStatus() };
-  this.code = HealthCheck.code['UNKNOWN'];
+  this.code = HealthCheck.code['CONTINUE'];
 
   this.start();
 }
+
+util.inherits( HealthCheck, EventEmitter );
 
 // var grant = 'host ip bulk.active bulk.queue bulk.rejected\n';
 // grant += 'elasticsearch13.localdomain 127.0.1.1 0 0    0\n';
@@ -23,10 +32,8 @@ function HealthCheck( client ){
 // grant += 'elasticsearch7.localdomain  127.0.1.1 0 0   20';
 
 HealthCheck.code = {
-  'UNKNOWN':  0,
   'CONTINUE': 1,
-  'BACKOFF':  2,
-  'STOP':     3,
+  'BACKOFF':  2
 };
 
 HealthCheck.prototype.start = function(){
@@ -35,6 +42,15 @@ HealthCheck.prototype.start = function(){
 
 HealthCheck.prototype.end = function(){
   clearInterval( this._interval );
+};
+
+HealthCheck.prototype.setCode = function( code ){
+  if( code > this.code ){
+    this.emit( 'pause' );
+  } else if( code < this.code ){
+    this.emit( 'resume' );
+  }
+  this.code = code;
 };
 
 HealthCheck.prototype.probe = function(){
@@ -50,7 +66,7 @@ HealthCheck.prototype.probe = function(){
 // recover: allow x times as many batches in the queue as are currently active
 HealthCheck.threshhold = {
   flood: 8,
-  recover: 2
+  recover: 0
 };
 
 HealthCheck.prototype.evaluate = function(){
@@ -61,15 +77,22 @@ HealthCheck.prototype.evaluate = function(){
     if( mag < magnitude.min ){ magnitude.min = mag; }
   });
 
+  // flood
   if( magnitude.max >= HealthCheck.threshhold.flood ){
-    this.code = HealthCheck.code[ 'BACKOFF' ];
+    this.setCode( HealthCheck.code[ 'BACKOFF' ] );
+
+  // resume
   } else if( this.code == HealthCheck.code[ 'BACKOFF' ] && magnitude.max <= HealthCheck.threshhold.recover ){
-    this.code = HealthCheck.code[ 'CONTINUE' ];
-  } else {
-    this.code = HealthCheck.code[ 'CONTINUE' ];
+    this.setCode( HealthCheck.code[ 'CONTINUE' ] );
+
+  // normal operation
   }
 
-  console.log( 'HealthCheck', this.code );
+  // else {
+  //   this.setCode( HealthCheck.code[ 'CONTINUE' ] );
+  // }
+
+  // console.log( 'HealthCheck', this.code );
 };
 
 /**
