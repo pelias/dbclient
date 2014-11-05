@@ -2,14 +2,14 @@
 var through = require('through2'),
     BatchManager = require('./BatchManager');
 
-function streamFactory(){
+function streamFactory( opts ){
 
-  var manager = new BatchManager();
+  var manager = new BatchManager( opts );
 
   var stream = through.obj( function( item, enc, next ){
     manager.push( item, next );
   }, function(){
-    manager.flush();
+    manager.end();
   });
 
   return stream;

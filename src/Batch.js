@@ -2,11 +2,11 @@
 var Task = require('./Task');
 
 var defaults = {
-  max: 500 // maximum records per batch
+  batchSize: 500 // maximum records per batch
 };
 
 function Batch( opts ){
-  this._max = opts && opts.max || defaults.max;
+  this._size = opts && opts.batchSize || defaults.batchSize;
   this._slots = [];
   this.retries = 0;
   this.status = 999;
@@ -14,7 +14,7 @@ function Batch( opts ){
 
 // how many free slots are left in this batch
 Batch.prototype.free = function(){
-  return this._max - this._slots.length;
+  return this._size - this._slots.length;
 };
 
 // add an record to the batch

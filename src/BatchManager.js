@@ -5,22 +5,25 @@ var Batch = require('./Batch'),
     // HealthCheck = require('./HealthCheck'),
     // hc = new HealthCheck( client );
 
+// this may be required on nodejs <0.11
 // process.maxTickDepth = Infinity;
 
-var flooding = {
-  pause: 50,
-  resume: 8
-};
-
-var debug = console.error.bind( console );
-var debug = function(){};
+// var debug = console.error.bind( console );
+// var debug = function(){};
 
 var stats = require('./stats');
 stats.start();
 
 function BatchManager( opts ){
 
-  this._current = new Batch();
+  // manager variable options
+  this._opts = opts || {};
+  if( !this._opts.flooding ){ this._opts.flooding = {}; }
+  if( !this._opts.flooding.pause ){ this._opts.flooding.pause = 50; } //50
+  if( !this._opts.flooding.resume ){ this._opts.flooding.resume = 8; } //8
+
+  // internal variables
+  this._current = new Batch( this._opts );
   this._transient = 0;
   this._resumeFunc = undefined;
 
@@ -83,7 +86,7 @@ BatchManager.prototype._dispatch = function( batch ){
     }
 
     // console.log( 'batch complete', err, batch._slots.length );
-    debug( 'transaction returned', err || 'ok!' );
+    // debug( 'transaction returned', err || 'ok!' );
 
     batch = {}; // reclaim memory
     // global.gc(); // call gc
@@ -97,13 +100,17 @@ BatchManager.prototype._dispatch = function( batch ){
 
 BatchManager.prototype.flush = function(){
   this._dispatch( this._current );
-  this._current = new Batch();
+  this._current = new Batch( this._opts );
 };
 
+// call this on stream end
+BatchManager.prototype.end = function(){
+  this.finished = true;
+  this.flush();
+}
+
 BatchManager.prototype._attemptEnd = function(){
-  // debug('try end', this._queued.length && !this._current._slots.length);
-  if( !this._transient && !this._current._slots.length ){
-    // console.log( 'END!' );
+  if( this.finished && !this._transient && !this._current._slots.length ){
     client.close();
     stats.end();
     // hc.end();
@@ -111,7 +118,7 @@ BatchManager.prototype._attemptEnd = function(){
 };
 
 BatchManager.prototype._attemptPause = function( next ){
-  if( this._transient >= flooding.pause ){
+  if( this._transient >= this._opts.flooding.pause ){
     
     if( this.isPaused() ){
       console.error( 'FATAL: double pause' );
@@ -128,8 +135,7 @@ BatchManager.prototype._attemptPause = function( next ){
 }
 
 BatchManager.prototype._attemptResume = function(){
-  // console.log( '_attemptResume', this.paused, this._transient, flooding.resume, this._resumeFunc );
-  if( this.isPaused() && this._transient <= flooding.resume ){
+  if( this.isPaused() && this._transient <= this._opts.flooding.resume ){
     var unpause = this._resumeFunc;
     this._resumeFunc = undefined;
     unpause();
