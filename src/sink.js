@@ -6,7 +6,7 @@ var through = require('through2'),
 function streamFactory( opts ){
 
   opts = opts || {};
-  if( !opts.client ){ client = require('./client'); }
+  if( !opts.client ){ client = require('./client')(); }
 
   var manager = new BatchManager( opts );
 
