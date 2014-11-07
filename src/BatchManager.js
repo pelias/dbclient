@@ -1,7 +1,6 @@
 
 var Batch = require('./Batch'),
-    transaction = require('./transaction'),
-    client = require('./client')();
+    transaction = require('./transaction');
     // HealthCheck = require('./HealthCheck'),
     // hc = new HealthCheck( client );
 
@@ -50,7 +49,7 @@ BatchManager.prototype._dispatch = function( batch ){
   this._transient++; // record active transactions
 
   // perform the transaction
-  transaction( client )( batch, function( err ){
+  transaction( this._opts.client )( batch, function( err ){
 
     // console.log( 'batch status', batch.status );
 
@@ -107,11 +106,11 @@ BatchManager.prototype.flush = function(){
 BatchManager.prototype.end = function(){
   this.finished = true;
   this.flush();
-}
+};
 
 BatchManager.prototype._attemptEnd = function(){
   if( this.finished && !this._transient && !this._current._slots.length ){
-    client.close();
+    this._opts.client.close();
     stats.end();
     // hc.end();
   }

@@ -14,21 +14,39 @@ module.exports.tests.interface = function(test, common) {
   });
 };
 
-module.exports.tests.functional_example = function(test, common) {
-  test('functional example', function(t) {
+// module.exports.tests.functional_example = function(test, common) {
+//   test('functional example', function(t) {
 
-    var assertStream = through.obj( function( chunk, enc, next ){
-      t.equal( chunk.test, 'test1', 'transform stream' );
-      t.end();
-      next();
-    });
+//     t.plan(2);
 
-    var stream = factory();
-    stream.pipe(assertStream);
-    stream.write({ test: 'foo' });
+//     var assertStream = through.obj( function( chunk, enc, next ){
+//       t.equal( chunk.test, 'test1', 'transform stream' );
+//       next();
+//     });
 
-  });
-};
+//     var client = {
+//       bulk: function( batch, cb ){
+//         setInterval( function(){
+//           return cb( 'expected failure' );
+//         }, 500 );
+//       },
+//       close: function(){
+//         t.equal( true, true, 'client closed' );
+//       }
+//     };
+
+//     var stream = factory({ client: client });
+//     stream.pipe(assertStream);
+//     stream.write({
+//       _index: 'foo',
+//       _type: 'foo',
+//       _id: 'foo',
+//       data: {}
+//     });
+//     stream.end();
+
+//   });
+// };
 
 module.exports.all = function (tape, common) {
 

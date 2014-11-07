@@ -1,8 +1,12 @@
 
 var through = require('through2'),
-    BatchManager = require('./BatchManager');
+    BatchManager = require('./BatchManager'),
+    client;
 
 function streamFactory( opts ){
+
+  opts = opts || {};
+  if( !opts.client ){ client = require('./client'); }
 
   var manager = new BatchManager( opts );
 
@@ -11,6 +15,9 @@ function streamFactory( opts ){
   }, function(){
     manager.end();
   });
+
+  // export client
+  stream.client = client;
 
   return stream;
 }
