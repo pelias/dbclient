@@ -1,11 +1,11 @@
 
-var stream = require('../index');
+var factory = require('../index');
 
 module.exports.tests = {};
 
 module.exports.tests.interface = function(test, common) {
   test('factory', function(t) {
-    t.equal(typeof stream, 'function', 'stream factory');
+    t.equal(typeof factory, 'function', 'stream factory');
     t.end();
   });
 };

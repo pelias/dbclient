@@ -39,6 +39,8 @@ Stats.prototype.runWatchers = function(){
 Stats.prototype.end = function(){
   this.updateStats();
   clearInterval( this.interval );
+  this.data.end = new Date().getTime();
+  this.flush();
 };
 
 Stats.prototype.inc = function( key, num ){
