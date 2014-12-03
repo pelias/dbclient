@@ -11,7 +11,6 @@ var Batch = require('./Batch'),
 // var debug = function(){};
 
 var stats = require('./stats');
-stats.start();
 
 function BatchManager( opts ){
 
@@ -105,7 +104,11 @@ BatchManager.prototype.flush = function(){
 // call this on stream end
 BatchManager.prototype.end = function(){
   this.finished = true;
-  this.flush();
+  if( this._current._slots.length ){
+    this.flush();
+  } else {
+    this._attemptEnd();
+  }
 };
 
 BatchManager.prototype._attemptEnd = function(){

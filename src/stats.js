@@ -1,6 +1,7 @@
 
 function Stats(){
   this.data = { start: new Date().getTime() };
+  this.active = false;
   this.watching = {};
 }
 
@@ -37,13 +38,22 @@ Stats.prototype.runWatchers = function(){
 };
 
 Stats.prototype.end = function(){
-  this.updateStats();
-  clearInterval( this.interval );
-  this.data.end = new Date().getTime();
-  this.flush();
+  if( this.active ){  
+    this.updateStats();
+    clearInterval( this.interval );
+    this.data.end = new Date().getTime();
+    this.flush();
+  }
 };
 
 Stats.prototype.inc = function( key, num ){
+
+  // start logging stats after the first update
+  if( !this.active ){
+    this.active = true;
+    this.start();
+  }
+
   if( !this.data.hasOwnProperty(key) ){
     this.data[key] = 0;
   }
