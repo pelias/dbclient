@@ -1,3 +1,4 @@
+var winston = require( 'pelias-logger' ).get( 'dbclient' );
 
 var max_retries = 5;
 var o = 0;
@@ -27,8 +28,9 @@ function wrapper( client ){
     // invalid bulk body length
     // @optimistic this should never happen
     if( !payload.length ){
-      console.log( JSON.stringify( payload, null, 2 ) );
-      return cb( 'invalid bulk payload length' );
+      var errMsg = 'invalid bulk payload length. Payload received: ' +
+        JSON.stringify( payload, null, 2 );
+      return cb( errMsg );
     }
 
     // console.log(transactionId, 'payload length', payload.length);
@@ -38,13 +40,13 @@ function wrapper( client ){
 
       // major error
       if( err ){
-        console.log( 'esclient error', err );
+        winston.error( 'esclient error', err );
         batch.status = 500;
       }
 
       // response does not contain items
       if( !resp || !resp.items ){
-        console.error( 'invalid resp from es bulk index operation' );
+        winston.error( 'invalid resp from es bulk index operation' );
         batch.status = 500;
       }
 
@@ -62,7 +64,7 @@ function wrapper( client ){
           // console.log( 'set task status', task.status, JSON.stringify( action, null, 2 ) );
 
           if( task.status > 201 ){
-            console.log( '[' + action.status + ']', action.error );
+            winston.error( '[' + action.status + ']', action.error );
           }
           // else {
           //   delete task.cmd; // reclaim memory
@@ -79,7 +81,7 @@ function wrapper( client ){
       // retry batch
       if( batch.status > 201 ){
         batch.retries++;
-        console.log( 'retrying batch', '[' + batch.status + ']' );
+        winston.info( 'retrying batch', '[' + batch.status + ']' );
         return transaction( batch, cb );
       }
 

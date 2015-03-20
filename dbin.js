@@ -1,10 +1,10 @@
-
+var winston = require( 'pelias-logger' ).get( 'dbclient' );
 var sink = require('./src/sink')();
 var byline = require('byline');
 var through = require('through2');
 
 process.stdin.on( 'error', function(){
-  console.error('something broke', arguments);
+  winston.error('something broke', arguments);
   process.exit(1);
 });
 
@@ -21,10 +21,10 @@ process.stdin
        // console.log( chunk );
      }
      catch( e ){
-        console.error('-----------------');
-        console.error('-----------------');
-        console.error('line>',line,'<line');
-        console.error('-----------------');
+        winston.error('-----------------');
+        winston.error('-----------------');
+        winston.error('line>',line,'<line');
+        winston.error('-----------------');
         throw new Error( 'json error: ' + e.message );
      }
 
