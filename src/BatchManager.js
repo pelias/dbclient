@@ -1,6 +1,7 @@
 
 var Batch = require('./Batch'),
-    transaction = require('./transaction');
+    transaction = require('./transaction'),
+    winston = require( 'pelias-logger' ).get( 'dbclient' );
     // HealthCheck = require('./HealthCheck'),
     // hc = new HealthCheck( client );
 
@@ -54,7 +55,7 @@ BatchManager.prototype._dispatch = function( batch ){
 
     if( err ){
       stats.inc( 'batch_error', 1 );
-      console.error( 'transaction error', err );
+      winston.error( 'transaction error', err );
     }
 
     else {
@@ -123,12 +124,12 @@ BatchManager.prototype._attemptPause = function( next ){
   if( this._transient >= this._opts.flooding.pause ){
     
     if( this.isPaused() ){
-      console.error( 'FATAL: double pause' );
+      winston.error( 'FATAL: double pause' );
       process.exit(1);
     }
 
     if( 'function' !== typeof next ){
-      console.error( 'FATAL: invalid next', next );
+      winston.error( 'FATAL: invalid next', next );
       process.exit(1);
     }
 
