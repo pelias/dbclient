@@ -3,7 +3,7 @@ var factory = require('../index');
 
 module.exports.tests = {};
 
-module.exports.tests.interface = function(test, common) {
+module.exports.tests.interface = function(test) {
   test('factory', function(t) {
     t.equal(typeof factory, 'function', 'stream factory');
     t.end();

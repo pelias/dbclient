@@ -4,6 +4,19 @@ var util = require('util'),
 
 var fields = 'host,ip,bulk.active,bulk.queue,bulk.rejected,bulk.queueSize';
 // var fields = 'host,ip,bulk.type,bulk.size,bulk.active,bulk.queue,bulk.queueSize,bulk.rejected,bulk.largest,bulk.completed,bulk.min,bulk.max,bulk.keepAlive';
+//
+function ThreadpoolStatus( body ){
+  var lines = ( body || '' ).trim().split('\n');
+  var headers = lines.shift().trim().split(/\s+/);
+  this.nodes = lines.map( function( line ){
+    var cols = line.trim().split(/\s+/);
+    var node = {};
+    headers.forEach( function( header, i ){
+      node[ header ] = ( i > 1 ) ? parseInt( cols[ i ], 10 ) : cols[ i ];
+    });
+    return node;
+  });
+}
 
 function HealthCheck( client ){
 
@@ -12,7 +25,7 @@ function HealthCheck( client ){
   this._client = client;
   this._interval = undefined;
   this._status = { threadpool: new ThreadpoolStatus() };
-  this.code = HealthCheck.code['CONTINUE'];
+  this.code = HealthCheck.code.CONTINUE;
 
   this.start();
 }
@@ -32,8 +45,8 @@ util.inherits( HealthCheck, EventEmitter );
 // grant += 'elasticsearch7.localdomain  127.0.1.1 0 0   20';
 
 HealthCheck.code = {
-  'CONTINUE': 1,
-  'BACKOFF':  2
+  CONTINUE: 1,
+  BACKOFF:  2
 };
 
 HealthCheck.prototype.start = function(){
@@ -54,7 +67,7 @@ HealthCheck.prototype.setCode = function( code ){
 };
 
 HealthCheck.prototype.probe = function(){
-  this._client.cat.threadPool( { v: true, h: fields }, function( method, body, status ){
+  this._client.cat.threadPool( { v: true, h: fields }, function( method, body){
     if( body ){
       this._status.threadpool = new ThreadpoolStatus( body );
       this.evaluate();
@@ -79,11 +92,11 @@ HealthCheck.prototype.evaluate = function(){
 
   // flood
   if( magnitude.max >= HealthCheck.threshhold.flood ){
-    this.setCode( HealthCheck.code[ 'BACKOFF' ] );
+    this.setCode( HealthCheck.code.BACKOFF );
 
   // resume
-  } else if( this.code == HealthCheck.code[ 'BACKOFF' ] && magnitude.max <= HealthCheck.threshhold.recover ){
-    this.setCode( HealthCheck.code[ 'CONTINUE' ] );
+  } else if( this.code == HealthCheck.code.BACKOFF && magnitude.max <= HealthCheck.threshhold.recover ){
+    this.setCode( HealthCheck.code.CONTINUE );
 
   // normal operation
   }
@@ -110,17 +123,4 @@ HealthCheck.prototype.evaluate = function(){
   'search.rejected': 0
 }]
 **/
-function ThreadpoolStatus( body ){
-  var lines = ( body || '' ).trim().split('\n');
-  var headers = lines.shift().trim().split(/\s+/);
-  this.nodes = lines.map( function( line ){
-    var cols = line.trim().split(/\s+/);
-    var node = {};
-    headers.forEach( function( header, i ){
-      node[ header ] = ( i > 1 ) ? parseInt( cols[ i ], 10 ) : cols[ i ];
-    });
-    return node;
-  });
-}
-
 module.exports = HealthCheck;

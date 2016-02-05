@@ -51,6 +51,6 @@ process.stdin
 
      next();
 
-  },function( line, _, next ){
+  },function( ){
     sink.end();
   }));

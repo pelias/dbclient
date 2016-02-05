@@ -1,10 +1,9 @@
 
-var factory = require('../index'),
-    through = require('through2');
+var factory = require('../index');
 
 module.exports.tests = {};
 
-module.exports.tests.interface = function(test, common) {
+module.exports.tests.interface = function(test) {
   test('stream interface', function(t) {
     var stream = factory();
     t.equal(typeof stream, 'object', 'valid stream');

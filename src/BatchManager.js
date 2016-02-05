@@ -122,7 +122,7 @@ BatchManager.prototype._attemptEnd = function(){
 
 BatchManager.prototype._attemptPause = function( next ){
   if( this._transient >= this._opts.flooding.pause ){
-    
+
     if( this.isPaused() ){
       winston.error( 'FATAL: double pause' );
       process.exit(1);
@@ -135,7 +135,7 @@ BatchManager.prototype._attemptPause = function( next ){
 
     this._resumeFunc = next;
   }
-}
+};
 
 BatchManager.prototype._attemptResume = function(){
   if( this.isPaused() && this._transient <= this._opts.flooding.resume ){
@@ -143,11 +143,11 @@ BatchManager.prototype._attemptResume = function(){
     this._resumeFunc = undefined;
     unpause();
   }
-}
+};
 
 BatchManager.prototype.isPaused = function(){
   return( 'function' === typeof this._resumeFunc );
-}
+};
 
 // add an item to the current batch
 BatchManager.prototype.push = function( item, next ){

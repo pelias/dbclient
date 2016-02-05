@@ -1,12 +1,8 @@
 var winston = require( 'pelias-logger' ).get( 'dbclient' );
 
 var max_retries = 5;
-var o = 0;
 
 function wrapper( client ){
-
-  var transactionId = ++o;
-
   function transaction( batch, cb ){
 
     // reached max retries
@@ -32,8 +28,6 @@ function wrapper( client ){
         JSON.stringify( payload, null, 2 );
       return cb( errMsg );
     }
-
-    // console.log(transactionId, 'payload length', payload.length);
 
     // perform bulk operation
     client.bulk( { body: payload }, function( err, resp ){
