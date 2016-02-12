@@ -1,7 +1,6 @@
 
 var through = require('through2'),
-    BatchManager = require('./BatchManager'),
-    winston = require( 'pelias-logger' ).get( 'dbclient' );
+    BatchManager = require('./BatchManager');
 
 function streamFactory( opts ){
   opts = opts || {};
