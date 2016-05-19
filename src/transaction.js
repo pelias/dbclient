@@ -27,12 +27,21 @@ function wrapper( client ){
 	if( error ){
           winston.error( 'esclient error', error );
 	}
-	if(response && response.docs ) {
+	if( response && response.docs ) {
           response.docs.forEach( function( doc, i ){
 	    if (doc.found) {
               var task = batch._slots[i];
-	      // merge. original doc overrules.
-	      task.data = _.merge({}, task.data, doc._source);
+	      // merge. new doc overrules.
+	      task.data = _.merge({}, doc._source, task.data);
+
+	      // a bit clumsy way to avoid dependency to pelias document
+	      var from = batch._mergeAssignFrom;
+	      if (from) {
+		var to = batch._mergeAssignTo;
+		for (var j=0; j<from.length; j++) {
+		  task.data[to[j]] = task.data[from[j]];
+		}
+	      }
 	    }
           });
 	}
