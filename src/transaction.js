@@ -9,7 +9,7 @@ function wrapper( client ){
 
     var payload = [];
 
-    if (batch._merge) { // merge mode. Read in first existing docs with the same ids
+    if (batch.merge) { // merge mode. Read in first existing docs with the same ids
       // set up mget call params
       batch._slots.forEach( function( task ){
         payload.push( task.cmd.index );
@@ -19,8 +19,8 @@ function wrapper( client ){
 	  docs: payload
 	}
       };
-      if (batch._mergeFields) { // optional
-	mgetParam._source = batch._mergeFields;
+      if (batch.mergeFields) { // optional
+	mgetParam._source = batch.mergeFields;
       }
       client.mget(mgetParam, function(error, response) {
 	// major error
@@ -31,13 +31,13 @@ function wrapper( client ){
           response.docs.forEach( function( doc, i ){
 	    if (doc.found) {
               var task = batch._slots[i];
-	      // merge. new doc overrules.
+	      // merge. New data overrules old doc
 	      task.data = _.merge({}, doc._source, task.data);
 
 	      // a bit clumsy way to avoid dependency to pelias document
-	      var from = batch._mergeAssignFrom;
+	      var from = batch.mergeAssignFrom;
 	      if (from) {
-		var to = batch._mergeAssignTo;
+		var to = batch.mergeAssignTo;
 		for (var j=0; j<from.length; j++) {
 		  task.data[to[j]] = task.data[from[j]];
 		}
@@ -46,7 +46,7 @@ function wrapper( client ){
           });
 	}
 	// proceed to indexing
-	batch._merge = false;
+	batch.merge = false;
         return transaction( batch, cb );
       });
     } else {
