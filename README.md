@@ -5,6 +5,34 @@
 $ npm install
 ```
 
+## Usage in normal indexing
+
+```
+var peliasDbClient = require( 'pelias-dbclient' );
+
+var mydataStream;
+// Create your standard nodejs data stream here ...
+
+var client = peliasDbClient({});
+myDataStream.pipe(client);
+
+// Then write docs to the pipe
+
+```
+
+
+## Update ES index by adding new fields to existing docs
+
+```
+var client = peliasDbclient({
+    merge: true,
+    mergeFields: ['name'],     // list new fields if they are known in advance
+    mergeAssignFrom: ['name'], // to keep the phrase field valid when name changes
+    mergeAssignTo: ['phrase']
+  });
+  // Index as usual. Whenever document ids match, the new data updates the old doc.
+```
+
 ## Contributing
 
 Please fork and pull request against upstream master on a feature branch.
