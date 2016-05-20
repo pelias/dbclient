@@ -10,13 +10,13 @@ $ npm install
 ```
 var peliasDbClient = require( 'pelias-dbclient' );
 
-var mydataStream;
+var myDataStream;
 // Create your standard nodejs data stream here ...
 
 var client = peliasDbClient({});
 myDataStream.pipe(client);
 
-// Then write docs to the pipe
+// Then write docs to the stream
 
 ```
 
@@ -27,8 +27,9 @@ myDataStream.pipe(client);
 var client = peliasDbclient({
     merge: true,
     mergeFields: ['name'],     // optional list of fields that need merging (default = whole doc)
-    mergeAssignFrom: ['name'], // to keep the phrase field valid when name changes
-    mergeAssignTo: ['phrase']
+    mergeAssignFrom: ['name'], // to keep the phrase field valid when name changes.
+    mergeAssignTo: ['phrase']  // target field for each 'From' array entry above.
+    		   	       // mergeAssignFrom.length must match mergeAssignTo.length
   });
   // Index as usual. Whenever document ids match, the new data updates the old doc.
 ```
