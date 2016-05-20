@@ -26,7 +26,7 @@ myDataStream.pipe(client);
 ```
 var client = peliasDbclient({
     merge: true,
-    mergeFields: ['name'],     // list new fields if they are known in advance
+    mergeFields: ['name'],     // optional list of fields that need merging (default = whole doc)
     mergeAssignFrom: ['name'], // to keep the phrase field valid when name changes
     mergeAssignTo: ['phrase']
   });
