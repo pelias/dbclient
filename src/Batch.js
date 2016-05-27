@@ -1,4 +1,5 @@
 
+var winston = require( 'pelias-logger' ).get( 'dbclient' );
 var Task = require('./Task');
 
 var defaults = {
@@ -6,10 +7,22 @@ var defaults = {
 };
 
 function Batch( opts ){
-  this._size = opts && opts.batchSize || defaults.batchSize;
+  this._size = opts.batchSize || defaults.batchSize;
+  this.merge = opts.merge;
+  this.mergeFields = opts.mergeFields;
   this._slots = [];
   this.retries = 0;
   this.status = 999;
+
+  // validate assign params for document merge
+  if( Array.isArray(opts.mergeAssignFrom) && Array.isArray(opts.mergeAssignTo) &&
+      opts.mergeAssignFrom.length === opts.mergeAssignTo.length) {
+    this.mergeAssignFrom = opts.mergeAssignFrom;
+    this.mergeAssignTo = opts.mergeAssignTo;
+  } else if (opts.mergeAssignFrom || opts.mergeAssignTo) {
+    winston.error( 'Bad assign parameters for document merging: ',
+		   opts.mergeAssignFrom, opts.mergeAssignTo );
+  }
 }
 
 // how many free slots are left in this batch
