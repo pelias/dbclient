@@ -15,80 +15,80 @@ function wrapper( client ){
         payload.push( task.cmd.index );
       });
       var mgetParam = {
-	body: {
-	  docs: payload
-	}
+        body: {
+          docs: payload
+        }
       };
       if (batch.mergeFields) { // optional
-	mgetParam._source = batch.mergeFields;
+        mgetParam._source = batch.mergeFields;
       }
       client.mget(mgetParam, function(error, response) {
-	// major error
-	if( error ){
+        // major error
+        if( error ){
           winston.error( 'esclient error', error );
-	}
-	if( response && response.docs ) {
+        }
+        if( response && response.docs ) {
           response.docs.forEach( function( doc, i ){
-	    if (doc.found) {
+            if (doc.found) {
               var task = batch._slots[i];
-	      // merge. New data overrules old doc
-	      task.data = _.merge({}, doc._source, task.data);
+              // merge. New data overrules old doc
+              task.data = _.merge({}, doc._source, task.data);
 
-	      // a bit clumsy way to avoid dependency to pelias document
-	      var from = batch.mergeAssignFrom;
-	      if (from) {
-		var to = batch.mergeAssignTo;
-		for (var j=0; j<from.length; j++) {
-		  task.data[to[j]] = task.data[from[j]];
-		}
-	      }
-	    }
+              // a bit clumsy way to avoid dependency to pelias document
+              var from = batch.mergeAssignFrom;
+              if (from) {
+                var to = batch.mergeAssignTo;
+                for (var j=0; j<from.length; j++) {
+                  task.data[to[j]] = task.data[from[j]];
+                }
+              }
+            }
           });
-	}
-	// proceed to indexing
-	batch.merge = false;
+        }
+        // proceed to indexing
+        batch.merge = false;
         return transaction( batch, cb );
       });
     } else {
 
       // reached max retries
       if( batch.retries >= max_retries ){
-	return cb( 'reached max retries' );
+        return cb( 'reached max retries' );
       }
 
       // map task object to bulk index format
       batch._slots.forEach( function( task ){
-	// filter only tasks that havn't been saved already
-	if( task.status > 201 ){
+        // filter only tasks that havn't been saved already
+        if( task.status > 201 ){
           payload.push( task.cmd, task.data );
-	}
+        }
       });
 
       // invalid bulk body length
       // @optimistic this should never happen
       if( !payload.length ){
-	var errMsg = 'invalid bulk payload length. Payload received: ' +
+        var errMsg = 'invalid bulk payload length. Payload received: ' +
             JSON.stringify( payload, null, 2 );
-	return cb( errMsg );
+        return cb( errMsg );
       }
 
       // perform bulk operation
       client.bulk( { body: payload }, function( err, resp ){
 
-	// major error
-	if( err ){
+        // major error
+        if( err ){
           winston.error( 'esclient error', err );
           batch.status = 500;
-	}
+        }
 
-	// response does not contain items
-	if( !resp || !resp.items ){
+        // response does not contain items
+        if( !resp || !resp.items ){
           winston.error( 'invalid resp from es bulk index operation' );
           batch.status = 500;
-	}
+        }
 
-	// update batch items with response status
-	else {
+        // update batch items with response status
+        else {
 
           // console.log( resp.items.length, batch._slots.length, payload.length );
 
@@ -113,17 +113,17 @@ function wrapper( client ){
               batch.status = task.status;
             }
           });
-	}
+        }
 
-	// retry batch
-	if( batch.status > 201 ){
+        // retry batch
+        if( batch.status > 201 ){
           batch.retries++;
           winston.info( 'retrying batch', '[' + batch.status + ']' );
           return transaction( batch, cb );
-	}
+        }
 
-	// done done
-	return cb( undefined );
+        // done done
+        return cb( undefined );
 
       });
 

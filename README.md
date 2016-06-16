@@ -29,7 +29,7 @@ var client = peliasDbclient({
     mergeFields: ['name'],     // optional list of fields that need merging (default = whole doc)
     mergeAssignFrom: ['name'], // to keep the phrase field valid when name changes.
     mergeAssignTo: ['phrase']  // target field for each 'From' array entry above.
-    		   	       // mergeAssignFrom.length must match mergeAssignTo.length
+                               // mergeAssignFrom.length must match mergeAssignTo.length
   });
   // Index as usual. Whenever document ids match, the new data updates the old doc.
 ```
