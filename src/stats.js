@@ -31,7 +31,7 @@ Stats.prototype.updateStats = function(){
 };
 
 Stats.prototype.flush = function(){
-  winston.verbose( this.data );
+  winston.info( this.data );
 };
 
 Stats.prototype.runWatchers = function(){
