@@ -30,7 +30,7 @@
     "tape": "^4.4.0"
   },
   "dependencies": {
-    "byline": "^4.1.1",
+    "byline": "^5.0.0",
     "elasticsearch": "^11.0.0",
     "openstreetmap-stream": "latest",
     "osm-pbf-parser": "^2.1.2",
