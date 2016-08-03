@@ -21,7 +21,7 @@ function Batch( opts ){
     this.mergeAssignTo = opts.mergeAssignTo;
   } else if (opts.mergeAssignFrom || opts.mergeAssignTo) {
     winston.error( 'Bad assign parameters for document merging: ',
-		   opts.mergeAssignFrom, opts.mergeAssignTo );
+                   opts.mergeAssignFrom, opts.mergeAssignTo );
   }
 }
 
