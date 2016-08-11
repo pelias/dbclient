@@ -7,7 +7,6 @@ node_js:
 matrix:
   fast_finish: true
   allow_failures:
-    - node_js: 6
 cache:
   directories:
     - node_modules
