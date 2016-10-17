@@ -2,6 +2,9 @@
   "name": "pelias-dbclient",
   "version": "2.0.0",
   "description": "Database client for Pelias import pipelines",
+  "engines": {
+    "node": ">=4.0.0"
+  },
   "main": "index.js",
   "scripts": {
     "test": "node test/run.js | tap-spec",
