@@ -36,7 +36,7 @@
     "osm-pbf-parser": "^2.1.2",
     "pelias-config": "2.3.0",
     "through2": "^2.0.1",
-    "pelias-logger": "0.0.8"
+    "pelias-logger": "0.1.0"
   },
   "pre-commit": [
     "lint",
