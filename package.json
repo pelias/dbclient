@@ -35,11 +35,13 @@
   "dependencies": {
     "byline": "^5.0.0",
     "elasticsearch": "^12.0.1",
+    "joi": "^10.1.0",
     "openstreetmap-stream": "latest",
     "osm-pbf-parser": "^2.1.2",
     "pelias-config": "2.4.0",
-    "through2": "^2.0.1",
-    "pelias-logger": "0.1.0"
+    "pelias-logger": "0.1.0",
+    "proxyquire": "^1.7.10",
+    "through2": "^2.0.1"
   },
   "pre-commit": [
     "lint",
