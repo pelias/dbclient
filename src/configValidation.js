@@ -9,7 +9,9 @@ const schema = Joi.object().keys({
   dbclient: {
     statFrequency: Joi.number().integer().min(0)
   },
-  esclient: Joi.object()
+  esclient: Joi.object().keys({
+    requestTimeout: Joi.number().integer().min(0)
+  }).unknown(true)
 }).requiredKeys('dbclient', 'dbclient.statFrequency', 'esclient').unknown(true);
 
 module.exports = {

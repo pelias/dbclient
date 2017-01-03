@@ -84,6 +84,62 @@ module.exports.tests.validate = function(test, common) {
 
   });
 
+  test('config with non-integer esclient.requestTimeout should throw error', function(t) {
+    [null, 'string', {}, [], false].forEach((value) => {
+      var config = {
+        dbclient: {
+          statFrequency: 17
+        },
+        esclient: {
+          requestTimeout: value
+        }
+      };
+
+      t.throws(function() {
+        configValidation.validate(config);
+      }, /"requestTimeout" must be a number/, 'esclient.requestTimeout should be a number');
+    });
+
+    t.end();
+
+  });
+
+  test('config with non-integer esclient.requestTimeout should throw error', function(t) {
+    var config = {
+      dbclient: {
+        statFrequency: 17
+      },
+      esclient: {
+        requestTimeout: 17.3
+      }
+    };
+
+    t.throws(function() {
+      configValidation.validate(config);
+    }, /"requestTimeout" must be an integer/, 'esclient.requestTimeout should be an integer');
+
+    t.end();
+
+  });
+
+  test('config with negative esclient.requestTimeout should throw error', function(t) {
+    var config = {
+      dbclient: {
+        statFrequency: 17
+      },
+      esclient: {
+        requestTimeout: -1
+      }
+    };
+
+    t.throws(function() {
+      configValidation.validate(config);
+    }, /"requestTimeout" must be larger than or equal to 0/, 'esclient.requestTimeout must be positive');
+
+    t.end();
+
+  });
+
   test('config with 0 dbclient.statFrequency and object esclient should not throw error', function(t) {
     var config = {
       dbclient: {
@@ -100,12 +156,14 @@ module.exports.tests.validate = function(test, common) {
 
   });
 
-  test('config with positive dbclient.statFrequency and object esclient should not throw error', function(t) {
+  test('config with positive dbclient.statFrequency and object esclient w/requestTimeout should not throw error', function(t) {
     var config = {
       dbclient: {
         statFrequency: 1
       },
-      esclient: {}
+      esclient: {
+        requestTimeout: 17
+      }
     };
 
     t.doesNotThrow(function() {
