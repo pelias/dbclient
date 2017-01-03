@@ -20,7 +20,7 @@ module.exports.tests.invalidConfig = function(test) {
             throw Error('config is not valid');
           }
         }
-      })();
+      });
 
     }, /config is not valid/);
 
