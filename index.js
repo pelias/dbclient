@@ -1,6 +1,5 @@
-const config = require('pelias-config');
+require('./src/configValidation').validate(require('pelias-config').generate());
 
 module.exports = (function() {
-  require('./src/configValidation').validate(config.generate());
   return require('./src/sink');
 })();
