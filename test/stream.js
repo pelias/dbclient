@@ -1,30 +1,8 @@
-
-var factory = require('../index');
-
 module.exports.tests = {};
 
-module.exports.tests.interface = function(test) {
-  test('stream interface', function(t) {
-    // pass in opts so it doesn't tie into an actual ES instance
-    const opts =  { client: {} };
-
-    // proxyquire so the test isn't reliant on an actual pelias config
-    const proxyquire = require('proxyquire').noCallThru();
-    var stream = proxyquire('../index', {
-      './src/configValidation': {
-        validate: () => {}
-      }
-    })(opts);
-
-    t.equal(typeof stream, 'object', 'valid stream');
-    t.equal(typeof stream._read, 'function', 'valid readable');
-    t.equal(typeof stream._write, 'function', 'valid writeable');
-    t.end();
-  });
-
-};
-
 // module.exports.tests.functional_example = function(test, common) {
+//  var factory = require('../index');
+
 //   test('functional example', function(t) {
 
 //     t.plan(2);

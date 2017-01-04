@@ -1,13 +1,17 @@
 'use strict';
 
 const configValidation = require('../src/configValidation');
+const proxyquire = require('proxyquire').noCallThru();
 
 module.exports.tests = {};
 
 module.exports.tests.validate = function(test, common) {
-  test('config without schema should throw error', function(t) {
+  test('config without dbclient should throw error', function(t) {
     var config = {
-      esclient: {}
+      esclient: {},
+      schema: {
+        indexName: 'index_name'
+      }
     };
 
     t.throws(function() {
@@ -20,7 +24,10 @@ module.exports.tests.validate = function(test, common) {
   test('config without dbclient.statFrequency should throw error', function(t) {
     var config = {
       dbclient: {},
-      esclient: {}
+      esclient: {},
+      schema: {
+        indexName: 'index_name'
+      }
     };
 
     t.throws(function() {
@@ -36,7 +43,10 @@ module.exports.tests.validate = function(test, common) {
         dbclient: {
           statFrequency: value
         },
-        esclient: {}
+        esclient: {},
+        schema: {
+          indexName: 'index_name'
+        }
       };
 
       t.throws(function() {
@@ -54,7 +64,10 @@ module.exports.tests.validate = function(test, common) {
       dbclient: {
         statFrequency: 17.3
       },
-      esclient: {}
+      esclient: {},
+      schema: {
+        indexName: 'index_name'
+      }
     };
 
     t.throws(function() {
@@ -71,7 +84,10 @@ module.exports.tests.validate = function(test, common) {
         dbclient: {
           statFrequency: 17
         },
-        esclient: value
+        esclient: value,
+        schema: {
+          indexName: 'index_name'
+        }
       };
 
       t.throws(function() {
@@ -92,6 +108,9 @@ module.exports.tests.validate = function(test, common) {
         },
         esclient: {
           requestTimeout: value
+        },
+        schema: {
+          indexName: 'index_name'
         }
       };
 
@@ -111,6 +130,9 @@ module.exports.tests.validate = function(test, common) {
       },
       esclient: {
         requestTimeout: 17.3
+      },
+      schema: {
+        indexName: 'index_name'
       }
     };
 
@@ -129,6 +151,9 @@ module.exports.tests.validate = function(test, common) {
       },
       esclient: {
         requestTimeout: -1
+      },
+      schema: {
+        indexName: 'index_name'
       }
     };
 
@@ -140,35 +165,140 @@ module.exports.tests.validate = function(test, common) {
 
   });
 
+  test('config with non-object schema should throw error', function(t) {
+    [null, 'string', 17.3, [], false].forEach((value) => {
+      var config = {
+        dbclient: {
+          statFrequency: 0
+        },
+        esclient: {},
+        schema: value
+      };
+
+      t.throws(function() {
+        configValidation.validate(config);
+      }, /"schema" must be an object/);
+
+    });
+
+    t.end();
+
+  });
+
+  test('config with non-string schema.indexName should throw error', function(t) {
+    [null, 17.3, {}, [], false].forEach((value) => {
+      var config = {
+        dbclient: {
+          statFrequency: 0
+        },
+        esclient: {},
+        schema: {
+          indexName: value
+        }
+      };
+
+      t.throws(function() {
+        configValidation.validate(config);
+      }, /"indexName" must be a string/);
+
+    });
+
+    t.end();
+
+  });
+
+  test('config without schema.indexName should throw error', function(t) {
+    var config = {
+      dbclient: {
+        statFrequency: 0
+      },
+      esclient: {},
+      schema: {}
+    };
+
+    t.throws(function() {
+      configValidation.validate(config);
+    }, /"indexName" is required/);
+    t.end();
+
+  });
+
   test('config with 0 dbclient.statFrequency and object esclient should not throw error', function(t) {
     var config = {
       dbclient: {
         statFrequency: 0
       },
-      esclient: {}
+      esclient: {},
+      schema: {
+        indexName: 'index_name'
+      }
     };
 
     t.doesNotThrow(function() {
-      configValidation.validate(config);
+      proxyquire('../src/configValidation', {
+        'elasticsearch': {
+          Client: function() {
+            return { indices: { exists: (indexName, cb) => { cb(true); } } };
+          }
+        }
+      }).validate(config);
     }, 'no error should have been thrown');
 
     t.end();
 
   });
 
-  test('config with positive dbclient.statFrequency and object esclient w/requestTimeout should not throw error', function(t) {
+  test('valid config with existing index should not throw error', function(t) {
     var config = {
       dbclient: {
         statFrequency: 1
       },
       esclient: {
         requestTimeout: 17
+      },
+      schema: {
+        indexName: 'index_name'
       }
     };
 
-    t.doesNotThrow(function() {
-      configValidation.validate(config);
+    t.doesNotThrow(() => {
+      proxyquire('../src/configValidation', {
+        'elasticsearch': {
+          Client: function() {
+            return { indices: { exists: (indexName, cb) => { cb(true); } } };
+          }
+        }
+      }).validate(config);
+
     }, 'no error should have been thrown');
+
+    t.end();
+
+  });
+
+  test('non-existent index should throw error', function(t) {
+    var config = {
+      dbclient: {
+        statFrequency: 1
+      },
+      esclient: {
+        requestTimeout: 17
+      },
+      schema: {
+        indexName: 'index_name'
+      }
+    };
+
+    t.throws(() => {
+      proxyquire('../src/configValidation', {
+        'elasticsearch': {
+          Client: function() {
+            return { indices: { exists: (indexName, cb) => { cb(false); } } };
+          }
+        }
+      }).validate(config);
+
+    }, /elasticsearch index index_name does not exist/);
 
     t.end();
 
