@@ -10,6 +10,26 @@ module.exports.tests.interface = function(test) {
   });
 };
 
+module.exports.tests.invalidConfig = function(test) {
+  test('configValidation throwing error should rethrow', function(t) {
+    t.throws(function() {
+      const proxyquire = require('proxyquire').noCallThru();
+      proxyquire('../index', {
+        './src/configValidation': {
+          validate: () => {
+            throw Error('config is not valid');
+          }
+        }
+      });
+
+    }, /config is not valid/);
+
+    t.end();
+
+  });
+
+};
+
 module.exports.all = function (tape, common) {
 
   function test(name, testFunction) {
