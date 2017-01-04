@@ -2,6 +2,7 @@
 
 const configValidation = require('../src/configValidation');
 const proxyquire = require('proxyquire').noCallThru();
+const intercept = require('intercept-stdout');
 
 module.exports.tests = {};
 
@@ -289,6 +290,14 @@ module.exports.tests.validate = function(test, common) {
       }
     };
 
+    var stderr = '';
+
+    // intercept/swallow stderr
+    var unhook_intercept = intercept(
+      function() { },
+      function(txt) { stderr += txt; return ''; }
+    );
+
     t.throws(() => {
       proxyquire('../src/configValidation', {
         'elasticsearch': {
@@ -300,6 +309,9 @@ module.exports.tests.validate = function(test, common) {
 
     }, /elasticsearch index index_name does not exist/);
 
+    t.ok(stderr.match(/ERROR: Elasticsearch index index_name does not exist/));
+
+    unhook_intercept();
     t.end();
 
   });
