@@ -1,5 +1,7 @@
 ## Install Dependencies
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/pelias/dbclient.svg)](https://greenkeeper.io/)
+
 ```bash
 $ npm install
 ```
