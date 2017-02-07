@@ -3,7 +3,8 @@ var util = require('util'),
     EventEmitter = require('events').EventEmitter;
 
 var fields = 'host,ip,bulk.active,bulk.queue,bulk.rejected,bulk.queueSize';
-// var fields = 'host,ip,bulk.type,bulk.size,bulk.active,bulk.queue,bulk.queueSize,bulk.rejected,bulk.largest,bulk.completed,bulk.min,bulk.max,bulk.keepAlive';
+// var fields = 'host,ip,bulk.type,bulk.size,bulk.active,bulk.queue,bulk.queueSize,bulk.rejected,
+//               bulk.largest,bulk.completed,bulk.min,bulk.max,bulk.keepAlive';
 //
 function ThreadpoolStatus( body ){
   var lines = ( body || '' ).trim().split('\n');
@@ -95,7 +96,7 @@ HealthCheck.prototype.evaluate = function(){
     this.setCode( HealthCheck.code.BACKOFF );
 
   // resume
-  } else if( this.code == HealthCheck.code.BACKOFF && magnitude.max <= HealthCheck.threshhold.recover ){
+  } else if( this.code === HealthCheck.code.BACKOFF && magnitude.max <= HealthCheck.threshhold.recover ){
     this.setCode( HealthCheck.code.CONTINUE );
 
   // normal operation
