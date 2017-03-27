@@ -5,9 +5,5 @@ node_js:
   - 6
 matrix:
   fast_finish: true
-  allow_failures:
-cache:
-  directories:
-    - node_modules
 before_script:
   - npm prune
