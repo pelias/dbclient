@@ -50,7 +50,6 @@
   "pre-commit": [
     "lint",
     "validate",
-    "test",
     "check-dependencies"
   ]
 }
