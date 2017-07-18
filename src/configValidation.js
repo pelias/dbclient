@@ -29,7 +29,7 @@ module.exports = {
       const esclient = new elasticsearch.Client(config.esclient);
 
       // callback that throws an error if the index doesn't exist
-      const existsCallback = (exists) => {
+      const existsCallback = (error, exists) => {
         if (!exists) {
           console.error(`ERROR: Elasticsearch index ${config.schema.indexName} does not exist`);
           console.error('You must use the pelias-schema tool (https://github.com/pelias/schema/) to create the index first');
