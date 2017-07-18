@@ -7,7 +7,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "node test/run.js | tap-spec",
+    "test": "NODE_ENV=test node test/run.js | tap-spec",
     "lint": "jshint .",
     "validate": "npm ls",
     "check-dependencies": "node_modules/.bin/npm-check --production",
