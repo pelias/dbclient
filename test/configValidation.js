@@ -239,7 +239,7 @@ module.exports.tests.validate = function(test, common) {
       proxyquire('../src/configValidation', {
         'elasticsearch': {
           Client: function() {
-            return { indices: { exists: (indexName, cb) => { cb(true); } } };
+            return { indices: { exists: (indexName, cb) => { cb(false, true); } } };
           }
         }
       }).validate(config);
@@ -266,7 +266,7 @@ module.exports.tests.validate = function(test, common) {
       proxyquire('../src/configValidation', {
         'elasticsearch': {
           Client: function() {
-            return { indices: { exists: (indexName, cb) => { cb(true); } } };
+            return { indices: { exists: (indexName, cb) => { cb(false, true); } } };
           }
         }
       }).validate(config);
@@ -302,7 +302,7 @@ module.exports.tests.validate = function(test, common) {
       proxyquire('../src/configValidation', {
         'elasticsearch': {
           Client: function() {
-            return { indices: { exists: (indexName, cb) => { cb(false); } } };
+            return { indices: { exists: (indexName, cb) => { cb(false, false); } } };
           }
         }
       }).validate(config);
