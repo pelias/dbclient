@@ -10,8 +10,8 @@ function streamFactory( opts ){
 
   var stream = through.obj( function( item, enc, next ){
     manager.push( item, next );
-  }, function(){
-    manager.end();
+  }, function(next) {
+    manager.end(next);
   });
 
   // export client
