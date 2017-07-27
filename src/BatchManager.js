@@ -44,7 +44,7 @@ function BatchManager( opts ){
 }
 
 // dispatch batch
-BatchManager.prototype._dispatch = function( batch ){
+BatchManager.prototype._dispatch = function( batch, next ){
 
   this._transient++; // record active transactions
 
@@ -94,35 +94,42 @@ BatchManager.prototype._dispatch = function( batch ){
     this._attemptResume();
     this._attemptEnd();
 
+    if ('function' === typeof next) {
+      next();
+    }
+
   }.bind(this));
 };
 
-BatchManager.prototype.flush = function(){
-  this._dispatch( this._current );
+BatchManager.prototype.flush = function(next){
+  this._dispatch( this._current, next );
   this._current = new Batch( this._opts );
 };
 
 // call this on stream end
-BatchManager.prototype.end = function(){
+BatchManager.prototype.end = function(next){
   this.finished = true;
   if( this._current._slots.length ){
-    this.flush();
+    this.flush(next);
   } else {
-    this._attemptEnd();
+    this._attemptEnd(next);
   }
 };
 
-BatchManager.prototype._attemptEnd = function(){
+BatchManager.prototype._attemptEnd = function(next){
   if( this.finished && !this._transient && !this._current._slots.length ){
     this._opts.client.close();
     stats.end();
+
+    if ('function' === typeof next) {
+      next();
+    }
     // hc.end();
   }
 };
 
 BatchManager.prototype._attemptPause = function( next ){
   if( this._transient >= this._opts.flooding.pause ){
-
     if( this.isPaused() ){
       winston.error( 'FATAL: double pause' );
       process.exit(1);
