@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "byline": "^5.0.0",
-    "elasticsearch": "^12.0.1",
+    "elasticsearch": "^13.2.0",
     "joi": "^10.1.0",
     "openstreetmap-stream": "latest",
     "pelias-config": "2.9.0",
