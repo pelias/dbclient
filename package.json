@@ -45,7 +45,7 @@
     "joi": "^11.0.1",
     "openstreetmap-stream": "latest",
     "pelias-config": "2.12.1",
-    "pelias-logger": "0.2.0",
+    "pelias-logger": "0.2.1",
     "through2": "^2.0.1"
   },
   "pre-commit": [
