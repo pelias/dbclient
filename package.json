@@ -44,7 +44,7 @@
     "elasticsearch": "^13.2.0",
     "joi": "^12.0.0",
     "openstreetmap-stream": "latest",
-    "pelias-config": "2.13.0",
+    "pelias-config": "2.14.0",
     "pelias-logger": "0.3.0",
     "through2": "^2.0.1"
   },
