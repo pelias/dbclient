@@ -5,18 +5,9 @@ node_js:
   - 6
 matrix:
   fast_finish: true
-env:
-  global:
-    - CXX=g++-4.8
 before_script:
   - npm prune
 script: npm run travis
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
 notifications:
   email: false
 after_success:
