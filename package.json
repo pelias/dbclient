@@ -10,9 +10,8 @@
     "test": "NODE_ENV=test node test/run.js | tap-spec",
     "lint": "jshint .",
     "validate": "npm ls",
-    "check-dependencies": "node_modules/.bin/npm-check --production",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "travis": "npm run check-dependencies && npm test"
+    "travis": "npm test"
   },
   "repository": {
     "type": "git",
@@ -32,7 +31,6 @@
   "homepage": "https://github.com/pelias/dbclient",
   "devDependencies": {
     "intercept-stdout": "^0.1.2",
-    "npm-check": "git://github.com/orangejulius/npm-check.git#disable-update-check",
     "precommit-hook": "^3.0.0",
     "proxyquire": "^1.7.10",
     "semantic-release": "^8.0.3",
