@@ -18,8 +18,8 @@ function BatchManager( opts ){
   // manager variable options
   this._opts = opts || {};
   if( !this._opts.flooding ){ this._opts.flooding = {}; }
-  if( !this._opts.flooding.pause ){ this._opts.flooding.pause = 50; } //50
-  if( !this._opts.flooding.resume ){ this._opts.flooding.resume = 8; } //8
+  if( !this._opts.flooding.pause ){ this._opts.flooding.pause = 10; } //50
+  if( !this._opts.flooding.resume ){ this._opts.flooding.resume = 2; } //8
 
   // internal variables
   this._current = new Batch( this._opts );
