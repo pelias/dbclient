@@ -36,13 +36,13 @@ const stream = streamify([1, 2, 3])
   }))
   .pipe(dbMapper())
   .pipe(dbclient()); // put documents into elasticsearch
-    
+
 stream.on('finish', () => {
   // let's assume that documents with the same type but another timestamp (for example old copies)
   // have to be deleted
   const client = new elasticsearch.Client(config.esclient);
   elasticDeleteQuery(client);
-    
+
   const options = {
     index: config.schema.indexName,
     type: 'venue',
@@ -59,7 +59,7 @@ stream.on('finish', () => {
       }
     }
   };
-  
+
   client.deleteByQuery(options, (err, response) => {
     console.log('The elements deleted are: %s', response.elements);
   });
@@ -81,6 +81,6 @@ $ npm test
 
 ### Continuous Integration
 
-Travis tests every release against Node.js versions `4` and `6`
+Travis tests every release against all currently supported Node.js versions.
 
 [![Build Status](https://travis-ci.org/pelias/dbclient.png?branch=master)](https://travis-ci.org/pelias/dbclient)

@@ -3,16 +3,15 @@
   "version": "0.0.0-development",
   "description": "Database client for Pelias import pipelines",
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=6.0.0"
   },
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test node test/run.js | tap-spec",
     "lint": "jshint .",
     "validate": "npm ls",
-    "check-dependencies": "node_modules/.bin/npm-check --production",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "travis": "npm run check-dependencies && npm test"
+    "travis": "npm test"
   },
   "repository": {
     "type": "git",
@@ -32,7 +31,6 @@
   "homepage": "https://github.com/pelias/dbclient",
   "devDependencies": {
     "intercept-stdout": "^0.1.2",
-    "npm-check": "git://github.com/orangejulius/npm-check.git#disable-update-check",
     "precommit-hook": "^3.0.0",
     "proxyquire": "^1.7.10",
     "semantic-release": "^8.0.3",
@@ -40,10 +38,8 @@
     "tape": "^4.4.0"
   },
   "dependencies": {
-    "byline": "^5.0.0",
     "elasticsearch": "^13.2.0",
     "joi": "^12.0.0",
-    "openstreetmap-stream": "latest",
     "pelias-config": "2.14.0",
     "pelias-logger": "0.3.0",
     "through2": "^2.0.1"
