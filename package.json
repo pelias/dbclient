@@ -10,7 +10,6 @@
     "test": "NODE_ENV=test node test/run.js | tap-spec",
     "lint": "jshint .",
     "validate": "npm ls",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "travis": "npm test"
   },
   "repository": {
