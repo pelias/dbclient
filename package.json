@@ -47,5 +47,8 @@
     "lint",
     "validate",
     "test"
-  ]
+  ],
+  "release": {
+    "succcess": []
+  }
 }
