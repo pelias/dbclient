@@ -37,7 +37,7 @@
     "tape": "^4.4.0"
   },
   "dependencies": {
-    "elasticsearch": "^14.0.0",
+    "elasticsearch": "^15.0.0",
     "joi": "^13.1.2",
     "pelias-config": "2.14.1",
     "pelias-logger": "0.3.1",
