@@ -8,7 +8,7 @@ module.exports = function(){
 
   // Create new esclient with settings
   if( !singleton ){
-    singleton = new elasticsearch.Client( settings.export().esclient || {} );
+    singleton = new elasticsearch.Client( settings.esclient || {} );
   }
 
   return singleton;
