@@ -40,7 +40,7 @@
     "elasticsearch": "^15.0.0",
     "joi": "^13.1.2",
     "pelias-config": "3.0.2",
-    "pelias-logger": "0.4.1",
+    "pelias-logger": "0.4.2",
     "through2": "^2.0.1"
   },
   "pre-commit": [
