@@ -32,7 +32,6 @@
     "intercept-stdout": "^0.1.2",
     "precommit-hook": "^3.0.0",
     "proxyquire": "^2.0.0",
-    "semantic-release": "^15.0.0",
     "tap-spec": "^5.0.0",
     "tape": "^4.4.0"
   },

@@ -1,5 +1,7 @@
 sudo: false
 language: node_js
+notifications:
+  email: false
 node_js:
   - 6
   - 8
@@ -7,10 +9,14 @@ node_js:
 matrix:
   fast_finish: true
 script: npm run travis
-notifications:
-  email: false
-after_success:
-  - npx semantic-release
+before_install:
+  - npm i -g npm
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
+jobs:
+  include:
+    - stage: release
+      node_js: 10
+      script: curl "https://raw.githubusercontent.com/pelias/ci-tools/master/semantic-release.sh" | bash -
+      if: branch = master
