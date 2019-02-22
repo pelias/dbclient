@@ -1,7 +1,8 @@
-var winston = require( 'pelias-logger' ).get( 'dbclient' );
+const default_pelias_logger = require( 'pelias-logger' ).get( 'dbclient' );
 var peliasConfig = require( 'pelias-config' ).generate().dbclient;
 
-function Stats(){
+function Stats(parent_logger){
+  this.logger = parent_logger ? parent_logger : default_pelias_logger;
   this.data = {};
   this.active = false;
   this.watching = {};
@@ -31,7 +32,7 @@ Stats.prototype.updateStats = function(){
 };
 
 Stats.prototype.flush = function(){
-  winston.info( this.data );
+  this.logger.info( this.data );
 };
 
 Stats.prototype.runWatchers = function(){
@@ -62,4 +63,4 @@ Stats.prototype.inc = function( key, num ){
   this.data[key] += num;
 };
 
-module.exports = new Stats();
+module.exports = Stats;
