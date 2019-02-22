@@ -1,7 +1,6 @@
-
-var Batch = require('./Batch'),
-    transaction = require('./transaction'),
-    winston = require( 'pelias-logger' ).get( 'dbclient' );
+const Batch = require('./Batch');
+const transaction = require('./transaction');
+const pelias_logger = require( 'pelias-logger' );
     // HealthCheck = require('./HealthCheck'),
     // hc = new HealthCheck( client );
 
@@ -11,15 +10,23 @@ var Batch = require('./Batch'),
 // var debug = console.error.bind( console );
 // var debug = function(){};
 
-var stats = require('./stats');
+const Stats = require('./stats');
 
 function BatchManager( opts ){
+
 
   // manager variable options
   this._opts = opts || {};
   if( !this._opts.flooding ){ this._opts.flooding = {}; }
   if( !this._opts.flooding.pause ){ this._opts.flooding.pause = 10; } //50
   if( !this._opts.flooding.resume ){ this._opts.flooding.resume = 2; } //8
+
+  // set up logger
+  const logger_name = this._opts.name ? `dbclient-${this._opts.name}` : 'dbclient';
+  this._logger = pelias_logger.get(logger_name);
+
+  // set up stats tracker
+  this._stats = new Stats(this._logger);
 
   // internal variables
   this._current = new Batch( this._opts );
@@ -30,15 +37,15 @@ function BatchManager( opts ){
   //   return hc._status.threadpool.nodes;
   // }.bind(this));
 
-  stats.watch( 'paused', function(){
+  this._stats.watch( 'paused', function(){
     return this.isPaused();
   }.bind(this));
 
-  stats.watch( 'transient', function(){
+  this._stats.watch( 'transient', function(){
     return this._transient;
   }.bind(this));
 
-  stats.watch( 'current_length', function(){
+  this._stats.watch( 'current_length', function(){
     return this._current._slots.length;
   }.bind(this));
 }
@@ -49,18 +56,18 @@ BatchManager.prototype._dispatch = function( batch, next ){
   this._transient++; // record active transactions
 
   // perform the transaction
-  transaction( this._opts.client )( batch, function( err ){
+  transaction( this._opts.client , this._logger)( batch, function( err ){
 
     // console.log( 'batch status', batch.status );
 
     if( err ){
-      stats.inc( 'batch_error', 1 );
-      winston.error( 'transaction error', err );
+      this._stats.inc( 'batch_error', 1 );
+      this._logger.error( 'transaction error', err );
     }
 
     else {
-      stats.inc( 'indexed', batch._slots.length );
-      stats.inc( 'batch_ok', 1 );
+      this._stats.inc( 'indexed', batch._slots.length );
+      this._stats.inc( 'batch_ok', 1 );
 
       var types = {};
       var failures = 0;
@@ -76,11 +83,11 @@ BatchManager.prototype._dispatch = function( batch, next ){
         }
       });
 
-      stats.inc( 'batch_retries', batch.retries );
-      stats.inc( 'failed_records', failures );
+      this._stats.inc( 'batch_retries', batch.retries );
+      this._stats.inc( 'failed_records', failures );
 
       for( var type in types ){
-        stats.inc( type, types[type] );
+        this._stats.inc( type, types[type] );
       }
     }
 
@@ -119,7 +126,7 @@ BatchManager.prototype.end = function(next){
 BatchManager.prototype._attemptEnd = function(next){
   if( this.finished && !this._transient && !this._current._slots.length ){
     this._opts.client.close();
-    stats.end();
+    this._stats.end();
 
     if ('function' === typeof next) {
       next();
@@ -131,12 +138,12 @@ BatchManager.prototype._attemptEnd = function(next){
 BatchManager.prototype._attemptPause = function( next ){
   if( this._transient >= this._opts.flooding.pause ){
     if( this.isPaused() ){
-      winston.error( 'FATAL: double pause' );
+      this._logger.error( 'FATAL: double pause' );
       process.exit(1);
     }
 
     if( 'function' !== typeof next ){
-      winston.error( 'FATAL: invalid next', next );
+      this._logger.error( 'FATAL: invalid next', next );
       process.exit(1);
     }
 
