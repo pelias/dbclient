@@ -38,7 +38,7 @@
   "dependencies": {
     "elasticsearch": "^15.0.0",
     "joi": "^14.0.0",
-    "pelias-config": "^3.0.2",
+    "pelias-config": "^4.0.0",
     "pelias-logger": "^1.2.1",
     "through2": "^3.0.0"
   },
