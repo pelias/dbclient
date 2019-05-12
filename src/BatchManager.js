@@ -8,7 +8,7 @@ function BatchManager( opts ){
   // manager variable options
   this._opts = opts || {};
   if( !this._opts.flooding ){ this._opts.flooding = {}; }
-  if( !this._opts.flooding.pause ){ this._opts.flooding.pause = 10; }
+  if( !this._opts.flooding.pause ){ this._opts.flooding.pause = 5; }
   if( !this._opts.flooding.resume ){ this._opts.flooding.resume = 2; }
 
   // set up logger
