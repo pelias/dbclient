@@ -5,8 +5,6 @@ const pelias_logger = require( 'pelias-logger' );
 const Stats = require('./stats');
 
 function BatchManager( opts ){
-
-
   // manager variable options
   this._opts = opts || {};
   if( !this._opts.flooding ){ this._opts.flooding = {}; }
