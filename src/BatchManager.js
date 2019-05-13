@@ -1,25 +1,15 @@
 const Batch = require('./Batch');
 const transaction = require('./transaction');
 const pelias_logger = require( 'pelias-logger' );
-    // HealthCheck = require('./HealthCheck'),
-    // hc = new HealthCheck( client );
-
-// this may be required on nodejs <0.11
-// process.maxTickDepth = Infinity;
-
-// var debug = console.error.bind( console );
-// var debug = function(){};
 
 const Stats = require('./stats');
 
 function BatchManager( opts ){
-
-
   // manager variable options
   this._opts = opts || {};
   if( !this._opts.flooding ){ this._opts.flooding = {}; }
-  if( !this._opts.flooding.pause ){ this._opts.flooding.pause = 10; } //50
-  if( !this._opts.flooding.resume ){ this._opts.flooding.resume = 2; } //8
+  if( !this._opts.flooding.pause ){ this._opts.flooding.pause = 5; }
+  if( !this._opts.flooding.resume ){ this._opts.flooding.resume = 2; }
 
   // set up logger
   const logger_name = this._opts.name ? `dbclient-${this._opts.name}` : 'dbclient';
@@ -32,10 +22,6 @@ function BatchManager( opts ){
   this._current = new Batch( this._opts );
   this._transient = 0;
   this._resumeFunc = undefined;
-
-  // stats.watch( 'healthcheck', function(){
-  //   return hc._status.threadpool.nodes;
-  // }.bind(this));
 
   this._stats.watch( 'paused', function(){
     return this.isPaused();
