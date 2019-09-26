@@ -60,10 +60,11 @@ BatchManager.prototype._dispatch = function( batch, next ){
 
       batch._slots.forEach( function( task ){
         if( task.status < 299 ){
-          if( !types.hasOwnProperty( task.cmd.index._type ) ){
-            types[ task.cmd.index._type ] = 0;
+          const type = task.data.layer || task.cmd.index._type;
+          if( !types.hasOwnProperty( type ) ){
+            types[ type ] = 0;
           }
-          types[ task.cmd.index._type ]++;
+          types[ type ]++;
         } else {
           failures++;
         }
