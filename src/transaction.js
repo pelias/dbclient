@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const pelias_logger = require( 'pelias-logger' );
 
 var max_retries = 5;
@@ -62,6 +63,11 @@ function wrapper( client, parent_logger ){
 
           if( task.status > 201 ){
             logger.error( '[' + action.status + ']', action.error );
+
+            // additional debugging output of the error and corresponding request
+            var req = batch._slots.filter(s => _.get(s, 'cmd.index._id') === action._id);
+            logger.info(JSON.stringify(action, null, 2));
+            logger.info(JSON.stringify(req, null, 2));
           }
           // else {
           //   delete task.cmd; // reclaim memory
