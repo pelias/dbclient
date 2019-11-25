@@ -11,7 +11,8 @@ module.exports.tests.validate = function(test, common) {
     var config = {
       esclient: {},
       schema: {
-        indexName: 'index_name'
+        indexName: 'example_index',
+        typeName: 'example_type'
       }
     };
 
@@ -27,7 +28,8 @@ module.exports.tests.validate = function(test, common) {
       dbclient: {},
       esclient: {},
       schema: {
-        indexName: 'index_name'
+        indexName: 'example_index',
+        typeName: 'example_type'
       }
     };
 
@@ -46,7 +48,8 @@ module.exports.tests.validate = function(test, common) {
         },
         esclient: {},
         schema: {
-          indexName: 'index_name'
+          indexName: 'example_index',
+          typeName: 'example_type'
         }
       };
 
@@ -67,7 +70,8 @@ module.exports.tests.validate = function(test, common) {
       },
       esclient: {},
       schema: {
-        indexName: 'index_name'
+        indexName: 'example_index',
+        typeName: 'example_type'
       }
     };
 
@@ -87,7 +91,8 @@ module.exports.tests.validate = function(test, common) {
         },
         esclient: value,
         schema: {
-          indexName: 'index_name'
+          indexName: 'example_index',
+          typeName: 'example_type'
         }
       };
 
@@ -111,7 +116,8 @@ module.exports.tests.validate = function(test, common) {
           requestTimeout: value
         },
         schema: {
-          indexName: 'index_name'
+          indexName: 'example_index',
+          typeName: 'example_type'
         }
       };
 
@@ -133,7 +139,8 @@ module.exports.tests.validate = function(test, common) {
         requestTimeout: 17.3
       },
       schema: {
-        indexName: 'index_name'
+        indexName: 'example_index',
+        typeName: 'example_type'
       }
     };
 
@@ -154,7 +161,8 @@ module.exports.tests.validate = function(test, common) {
         requestTimeout: -1
       },
       schema: {
-        indexName: 'index_name'
+        indexName: 'example_index',
+        typeName: 'example_type'
       }
     };
 
@@ -231,7 +239,8 @@ module.exports.tests.validate = function(test, common) {
       },
       esclient: {},
       schema: {
-        indexName: 'index_name'
+        indexName: 'example_index',
+        typeName: 'example_type'
       }
     };
 
@@ -258,7 +267,8 @@ module.exports.tests.validate = function(test, common) {
         requestTimeout: 17
       },
       schema: {
-        indexName: 'index_name'
+        indexName: 'example_index',
+        typeName: 'example_type'
       }
     };
 
@@ -286,7 +296,8 @@ module.exports.tests.validate = function(test, common) {
         requestTimeout: 17
       },
       schema: {
-        indexName: 'index_name'
+        indexName: 'example_index',
+        typeName: 'example_type'
       }
     };
 
@@ -307,9 +318,9 @@ module.exports.tests.validate = function(test, common) {
         }
       }).validate(config);
 
-    }, /elasticsearch index index_name does not exist/);
+    }, /elasticsearch index example_index does not exist/);
 
-    t.ok(stderr.match(/ERROR: Elasticsearch index index_name does not exist/));
+    t.ok(stderr.match(/ERROR: Elasticsearch index example_index does not exist/));
 
     unhook_intercept();
     t.end();

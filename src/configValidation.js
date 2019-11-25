@@ -14,9 +14,13 @@ const schema = Joi.object().keys({
     requestTimeout: Joi.number().integer().min(0)
   }).unknown(true),
   schema: Joi.object().keys({
-    indexName: Joi.string()
+    indexName: Joi.string(),
+    typeName: Joi.string()
   })
-}).requiredKeys('dbclient', 'dbclient.statFrequency', 'esclient', 'schema.indexName').unknown(true);
+}).requiredKeys(
+  'dbclient', 'dbclient.statFrequency', 'esclient',
+  'schema.indexName', 'schema.typeName'
+).unknown(true);
 
 module.exports = {
   validate: function validate(config) {
