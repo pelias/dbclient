@@ -7,7 +7,6 @@
 
 This module provides a Node.js stream for bulk-inserting documents into [Elasticsearch](https://www.elastic.co/products/elasticsearch).
 
-[![Build Status](https://travis-ci.org/pelias/dbclient.png?branch=master)](https://travis-ci.org/pelias/dbclient)
 [![Greenkeeper badge](https://badges.greenkeeper.io/pelias/dbclient.svg)](https://greenkeeper.io/)
 
 ## Install Dependencies
@@ -92,4 +91,4 @@ $ npm test
 
 ### Continuous Integration
 
-Travis tests every release against all currently supported Node.js versions.
+CI tests every release against all currently supported Node.js versions.
