@@ -25,7 +25,9 @@ module.exports.tests.validate = function(test, common) {
 
   test('config without dbclient.statFrequency should throw error', function(t) {
     var config = {
-      dbclient: {},
+      dbclient: {
+        batchSize: 500
+      },
       esclient: {},
       schema: {
         indexName: 'example_index',
@@ -44,7 +46,8 @@ module.exports.tests.validate = function(test, common) {
     [null, 'string', {}, [], false].forEach((value) => {
       var config = {
         dbclient: {
-          statFrequency: value
+          statFrequency: value,
+          batchSize: 500
         },
         esclient: {},
         schema: {
@@ -66,7 +69,8 @@ module.exports.tests.validate = function(test, common) {
   test('config with non-integer dbclient.statFrequency should throw error', function(t) {
     var config = {
       dbclient: {
-        statFrequency: 17.3
+        statFrequency: 17.3,
+        batchSize: 500
       },
       esclient: {},
       schema: {
@@ -83,11 +87,76 @@ module.exports.tests.validate = function(test, common) {
 
   });
 
+  test('config without dbclient.batchSize should throw error', function(t) {
+    var config = {
+      dbclient: {
+        statFrequency: 100,
+      },
+      esclient: {},
+      schema: {
+        indexName: 'example_index',
+        typeName: 'example_type'
+      }
+    };
+
+    t.throws(function() {
+      configValidation.validate(config);
+    }, /"dbclient.batchSize" is required/, 'dbclient.batchSize should exist');
+    t.end();
+
+  });
+
+  test('config with non-number dbclient.batchSize should throw error', function(t) {
+    [null, 'string', {}, [], false].forEach((value) => {
+      var config = {
+        dbclient: {
+          statFrequency: 100,
+          batchSize: value
+        },
+        esclient: {},
+        schema: {
+          indexName: 'example_index',
+          typeName: 'example_type'
+        }
+      };
+
+      t.throws(function() {
+        configValidation.validate(config);
+      }, /"dbclient.batchSize" must be a number/, 'dbclient.batchSize should be a number');
+
+    });
+
+    t.end();
+
+  });
+
+  test('config with non-integer dbclient.batchSize should throw error', function(t) {
+    var config = {
+      dbclient: {
+        statFrequency: 17,
+        batchSize: 50.5
+      },
+      esclient: {},
+      schema: {
+        indexName: 'example_index',
+        typeName: 'example_type'
+      }
+    };
+
+    t.throws(function() {
+      configValidation.validate(config);
+    }, /"dbclient.batchSize" must be an integer/, 'dbclient.batchSize should be an integer');
+
+    t.end();
+
+  });
+
   test('config with non-object esclient should throw error', function(t) {
     [null, 17, [], 'string', true].forEach((value) => {
       var config = {
         dbclient: {
-          statFrequency: 17
+          statFrequency: 17,
+          batchSize: 500
         },
         esclient: value,
         schema: {
@@ -110,7 +179,8 @@ module.exports.tests.validate = function(test, common) {
     [null, 'string', {}, [], false].forEach((value) => {
       var config = {
         dbclient: {
-          statFrequency: 17
+          statFrequency: 17,
+          batchSize: 500
         },
         esclient: {
           requestTimeout: value
@@ -133,7 +203,8 @@ module.exports.tests.validate = function(test, common) {
   test('config with non-integer esclient.requestTimeout should throw error', function(t) {
     var config = {
       dbclient: {
-        statFrequency: 17
+        statFrequency: 17,
+        batchSize: 500
       },
       esclient: {
         requestTimeout: 17.3
@@ -155,7 +226,8 @@ module.exports.tests.validate = function(test, common) {
   test('config with negative esclient.requestTimeout should throw error', function(t) {
     var config = {
       dbclient: {
-        statFrequency: 17
+        statFrequency: 17,
+        batchSize: 500
       },
       esclient: {
         requestTimeout: -1
@@ -178,7 +250,8 @@ module.exports.tests.validate = function(test, common) {
     [null, 'string', 17.3, [], false].forEach((value) => {
       var config = {
         dbclient: {
-          statFrequency: 0
+          statFrequency: 0,
+          batchSize: 500
         },
         esclient: {},
         schema: value
@@ -198,7 +271,8 @@ module.exports.tests.validate = function(test, common) {
     [null, 17.3, {}, [], false].forEach((value) => {
       var config = {
         dbclient: {
-          statFrequency: 0
+          statFrequency: 0,
+          batchSize: 500
         },
         esclient: {},
         schema: {
@@ -219,7 +293,8 @@ module.exports.tests.validate = function(test, common) {
   test('config without schema.indexName should throw error', function(t) {
     var config = {
       dbclient: {
-        statFrequency: 0
+        statFrequency: 0,
+        batchSize: 500
       },
       esclient: {},
       schema: {}
@@ -235,7 +310,8 @@ module.exports.tests.validate = function(test, common) {
   test('config with 0 dbclient.statFrequency and object esclient should not throw error', function(t) {
     var config = {
       dbclient: {
-        statFrequency: 0
+        statFrequency: 0,
+        batchSize: 500
       },
       esclient: {},
       schema: {
@@ -261,7 +337,8 @@ module.exports.tests.validate = function(test, common) {
   test('valid config with existing index should not throw error', function(t) {
     var config = {
       dbclient: {
-        statFrequency: 1
+        statFrequency: 1,
+        batchSize: 500
       },
       esclient: {
         requestTimeout: 17
@@ -290,7 +367,8 @@ module.exports.tests.validate = function(test, common) {
   test('non-existent index should throw error', function(t) {
     var config = {
       dbclient: {
-        statFrequency: 1
+        statFrequency: 1,
+        batchSize: 500
       },
       esclient: {
         requestTimeout: 17

@@ -19,7 +19,7 @@ function BatchManager( opts ){
   this._stats = new Stats(this._logger);
 
   // internal variables
-  this._current = new Batch( this._opts );
+  this._current = new Batch();
   this._transient = 0;
   this._resumeFunc = undefined;
 
@@ -97,7 +97,7 @@ BatchManager.prototype._dispatch = function( batch, next ){
 
 BatchManager.prototype.flush = function(next){
   this._dispatch( this._current, next );
-  this._current = new Batch( this._opts );
+  this._current = new Batch();
 };
 
 // call this on stream end
