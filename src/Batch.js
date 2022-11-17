@@ -1,8 +1,8 @@
 const Task = require('./Task');
-const peliasConfig = require('pelias-config').generate();
+const _ = require('lodash');
 
-function Batch(){
-  this._size = peliasConfig.dbclient.batchSize;
+function Batch(opts, peliasConfig) {
+  this._size = _.defaults({}, opts, peliasConfig.dbclient).batchSize;
   this._slots = [];
   this.retries = 0;
   this.status = 999;

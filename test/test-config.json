@@ -1,0 +1,5 @@
+{
+  "dbclient": {
+    "batchSize": 1000
+  }
+}
