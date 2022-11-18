@@ -1,5 +1,3 @@
-'use strict';
-
 const Batch = require('../src/Batch');
 const path = require('path');
 const peliasConfig = require('pelias-config');
