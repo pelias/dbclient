@@ -1,6 +1,6 @@
 const Batch = require('../src/Batch');
 const path = require('path');
-const peliasConfig = require('pelias-config');
+const config = require('../src/config');
 
 module.exports.tests = {};
 
@@ -13,7 +13,7 @@ module.exports.tests.validate = function (test) {
       batchSize: 200
     };
 
-    const batch = new Batch(opts, peliasConfig.generate());
+    const batch = new Batch(opts);
 
     t.equals(batch.free(), 200, 'opts should be prioritised over config');
     t.end();
@@ -24,18 +24,20 @@ module.exports.tests.validate = function (test) {
   test('batch size from config should be used', function (t) {
 
     process.env.PELIAS_CONFIG = path.resolve(__dirname + '/test-config.json');
+    config.reload();
 
-    const batch = new Batch(undefined, peliasConfig.generate());
+    const batch = new Batch();
 
     t.equals(batch.free(), 1000, 'batch size from config should be used when opts do not have it');
     t.end();
 
     delete process.env.PELIAS_CONFIG;
+    config.reload();
   });
 
   test('default batch size from config should be used', function (t) {
 
-    const batch = new Batch(undefined, peliasConfig.generate());
+    const batch = new Batch();
 
     t.equals(batch.free(), 500, 'default batch size should be used when no batch size is configured');
     t.end();

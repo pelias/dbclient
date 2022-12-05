@@ -1,7 +1,6 @@
 const Batch = require('./Batch');
 const transaction = require('./transaction');
-const pelias_logger = require('pelias-logger');
-const peliasConfig = require('pelias-config').generate();
+const pelias_logger = require( 'pelias-logger' );
 
 const Stats = require('./stats');
 
@@ -20,7 +19,7 @@ function BatchManager( opts ){
   this._stats = new Stats(this._logger);
 
   // internal variables
-  this._current = new Batch( this._opts, peliasConfig );
+  this._current = new Batch( this._opts );
   this._transient = 0;
   this._resumeFunc = undefined;
 
@@ -98,7 +97,7 @@ BatchManager.prototype._dispatch = function( batch, next ){
 
 BatchManager.prototype.flush = function(next){
   this._dispatch( this._current, next );
-  this._current = new Batch( this._opts, peliasConfig );
+  this._current = new Batch( this._opts );
 };
 
 // call this on stream end
