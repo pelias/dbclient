@@ -8,7 +8,8 @@ const elasticsearch = require('elasticsearch');
 // esclient: object, validation performed by elasticsearch module
 const schema = Joi.object().keys({
   dbclient: Joi.object().required().keys({
-    statFrequency: Joi.number().integer().min(0).required()
+    statFrequency: Joi.number().integer().min(0).required(),
+    batchSize: Joi.number().integer().min(0).required()
   }),
   esclient: Joi.object().required().keys({
     requestTimeout: Joi.number().integer().min(0)

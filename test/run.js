@@ -5,7 +5,8 @@ var common = {};
 var tests = [
   require('./index'),
   require('./stream'),
-  require('./configValidation')
+  require('./configValidation'),
+  require('./Batch')
   // other tests go here
 ];
 

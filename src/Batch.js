@@ -1,12 +1,12 @@
+const Task = require('./Task');
+const _ = require('lodash');
+const config = require('./config');
 
-var Task = require('./Task');
+function Batch( opts ) {
 
-var defaults = {
-  batchSize: 500 // maximum records per batch
-};
+  // maximum records per batch
+  this._size = _.get(opts, 'batchSize') || config.get('batchSize') || 500;
 
-function Batch( opts ){
-  this._size = opts && opts.batchSize || defaults.batchSize;
   this._slots = [];
   this.retries = 0;
   this.status = 999;
