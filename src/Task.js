@@ -5,7 +5,6 @@ function Task( record ){
   this.cmd = {
     index: {
       _index: record._index,
-      _type: record._type,
       _id: record._id
     }
   };
