@@ -11,8 +11,7 @@ module.exports.tests.validate = function(test, common) {
     var config = {
       esclient: {},
       schema: {
-        indexName: 'example_index',
-        typeName: 'example_type'
+        indexName: 'example_index'
       }
     };
 
@@ -30,8 +29,7 @@ module.exports.tests.validate = function(test, common) {
       },
       esclient: {},
       schema: {
-        indexName: 'example_index',
-        typeName: 'example_type'
+        indexName: 'example_index'
       }
     };
 
@@ -51,8 +49,7 @@ module.exports.tests.validate = function(test, common) {
         },
         esclient: {},
         schema: {
-          indexName: 'example_index',
-          typeName: 'example_type'
+          indexName: 'example_index'
         }
       };
 
@@ -74,8 +71,7 @@ module.exports.tests.validate = function(test, common) {
       },
       esclient: {},
       schema: {
-        indexName: 'example_index',
-        typeName: 'example_type'
+        indexName: 'example_index'
       }
     };
 
@@ -94,8 +90,7 @@ module.exports.tests.validate = function(test, common) {
       },
       esclient: {},
       schema: {
-        indexName: 'example_index',
-        typeName: 'example_type'
+        indexName: 'example_index'
       }
     };
 
@@ -115,8 +110,7 @@ module.exports.tests.validate = function(test, common) {
         },
         esclient: {},
         schema: {
-          indexName: 'example_index',
-          typeName: 'example_type'
+          indexName: 'example_index'
         }
       };
 
@@ -138,8 +132,7 @@ module.exports.tests.validate = function(test, common) {
       },
       esclient: {},
       schema: {
-        indexName: 'example_index',
-        typeName: 'example_type'
+        indexName: 'example_index'
       }
     };
 
@@ -160,8 +153,7 @@ module.exports.tests.validate = function(test, common) {
         },
         esclient: value,
         schema: {
-          indexName: 'example_index',
-          typeName: 'example_type'
+          indexName: 'example_index'
         }
       };
 
@@ -186,8 +178,7 @@ module.exports.tests.validate = function(test, common) {
           requestTimeout: value
         },
         schema: {
-          indexName: 'example_index',
-          typeName: 'example_type'
+          indexName: 'example_index'
         }
       };
 
@@ -210,8 +201,7 @@ module.exports.tests.validate = function(test, common) {
         requestTimeout: 17.3
       },
       schema: {
-        indexName: 'example_index',
-        typeName: 'example_type'
+        indexName: 'example_index'
       }
     };
 
@@ -233,8 +223,7 @@ module.exports.tests.validate = function(test, common) {
         requestTimeout: -1
       },
       schema: {
-        indexName: 'example_index',
-        typeName: 'example_type'
+        indexName: 'example_index'
       }
     };
 
@@ -315,8 +304,7 @@ module.exports.tests.validate = function(test, common) {
       },
       esclient: {},
       schema: {
-        indexName: 'example_index',
-        typeName: 'example_type'
+        indexName: 'example_index'
       }
     };
 
@@ -344,8 +332,7 @@ module.exports.tests.validate = function(test, common) {
         requestTimeout: 17
       },
       schema: {
-        indexName: 'example_index',
-        typeName: 'example_type'
+        indexName: 'example_index'
       }
     };
 
@@ -374,8 +361,7 @@ module.exports.tests.validate = function(test, common) {
         requestTimeout: 17
       },
       schema: {
-        indexName: 'example_index',
-        typeName: 'example_type'
+        indexName: 'example_index'
       }
     };
 

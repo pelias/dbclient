@@ -15,8 +15,7 @@ const schema = Joi.object().keys({
     requestTimeout: Joi.number().integer().min(0)
   }).unknown(true),
   schema: Joi.object().keys({
-    indexName: Joi.string().required(),
-    typeName: Joi.string().required()
+    indexName: Joi.string().required()
   })
 }).unknown(true);
 

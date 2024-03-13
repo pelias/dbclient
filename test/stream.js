@@ -44,7 +44,6 @@ module.exports.tests.functional_example = function(test, common) {
     stream.pipe(assertStream);
     stream.write({
       _index: 'foo',
-      _type: 'foo',
       _id: 'foo',
       data: {}
     });

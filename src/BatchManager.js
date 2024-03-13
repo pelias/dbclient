@@ -55,16 +55,11 @@ BatchManager.prototype._dispatch = function( batch, next ){
       this._stats.inc( 'indexed', batch._slots.length );
       this._stats.inc( 'batch_ok', 1 );
 
-      var types = {};
       var failures = 0;
 
-      batch._slots.forEach( function( task ){
+      batch._slots.forEach(( task ) => {
         if( task.status < 299 ){
-          const type = task.data.layer || task.cmd.index._type;
-          if( !types.hasOwnProperty( type ) ){
-            types[ type ] = 0;
-          }
-          types[ type ]++;
+          this._stats.inc( task.data.layer || 'default', 1 );
         } else {
           failures++;
         }
@@ -72,10 +67,6 @@ BatchManager.prototype._dispatch = function( batch, next ){
 
       this._stats.inc( 'batch_retries', batch.retries );
       this._stats.inc( 'failed_records', failures );
-
-      for( var type in types ){
-        this._stats.inc( type, types[type] );
-      }
     }
 
     // console.log( 'batch complete', err, batch._slots.length );

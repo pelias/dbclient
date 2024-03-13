@@ -48,14 +48,11 @@ const stream = streamify([1, 2, 3])
   .pipe(dbclient()); // put documents into elasticsearch
 
 stream.on('finish', () => {
-  // let's assume that documents with the same type but another timestamp (for example old copies)
-  // have to be deleted
   const client = new elasticsearch.Client(config.esclient);
   elasticDeleteQuery(client);
 
   const options = {
     index: config.schema.indexName,
-    type: 'venue',
     body: {
       query: {
         "bool": {
