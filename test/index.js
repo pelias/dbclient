@@ -6,13 +6,15 @@ module.exports.tests = {};
 
 module.exports.tests.interface = function(test) {
   test('configValidation not throwing error should return a function', function(t) {
-    const factory = proxyquire('../index', {
+    const index = proxyquire('../index', {
       './src/configValidation': {
         validate: () => {}
       }
     });
 
-    t.equal(typeof factory, 'function', 'stream factory');
+    t.equal(typeof index, 'object', 'exports');
+    t.equal(typeof index.v1.client, 'function', 'client factory');
+    t.equal(typeof index.v1.createWriteStream, 'function', 'stream factory');
     t.end();
 
   });
@@ -25,7 +27,7 @@ module.exports.tests.interface = function(test) {
       './src/configValidation': {
         validate: () => {}
       }
-    })(opts);
+    }).v1.createWriteStream(opts);
 
     t.equal(typeof stream, 'object', 'valid stream');
     t.equal(typeof stream._read, 'function', 'valid readable');
@@ -49,8 +51,7 @@ module.exports.tests.invalidConfig = function(test) {
             throw Error('config is not valid');
           }
         }
-      });
-
+      }).v1.createWriteStream();
     }, /config is not valid/);
 
     process.env.NODE_ENV = env;
