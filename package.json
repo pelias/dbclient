@@ -36,8 +36,10 @@
     "tape": "^5.0.0"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^9.0.2",
     "@hapi/joi": "^16.0.0",
     "elasticsearch": "^16.0.0",
+    "lodash": "^4.17.21",
     "pelias-config": "^6.0.0",
     "pelias-logger": "^1.2.1",
     "through2": "^3.0.0"
