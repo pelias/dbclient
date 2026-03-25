@@ -26,7 +26,6 @@ We think open data, open source, and open strategy win over proprietary solution
 
 This module provides a Node.js stream for bulk-inserting documents into [Elasticsearch](https://www.elastic.co/products/elasticsearch).
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/pelias/dbclient.svg)](https://greenkeeper.io/)
 
 ## Install Dependencies
 
