@@ -10,7 +10,7 @@ module.exports.tests.functional_example = function(test, common) {
     './src/configValidation': {
       validate: () => {}
     }
-  });
+  }).v1.createWriteStream;
 
   test('functional example', function(t) {
 
