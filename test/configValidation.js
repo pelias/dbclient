@@ -7,6 +7,34 @@ const intercept = require('intercept-stdout');
 module.exports.tests = {};
 
 module.exports.tests.validate = function(test, common) {
+  test('config with icuTokenizer should not throw', function(t) {
+    var config = {
+      dbclient: {
+        batchSize: 500,
+        statFrequency: 100
+      },
+      esclient: {
+        requestTimeout: 500
+      },
+      schema: {
+        indexName: 'example_index',
+        icuTokenizer: true
+      }
+    };
+
+    t.doesNotThrow(function() {
+      proxyquire('../src/configValidation', {
+        'elasticsearch': {
+          Client: function() {
+            return { indices: { exists: (indexName, cb) => { cb(false, true); } } };
+          }
+        }
+      }).validate(config);
+    });
+    t.end();
+
+  });
+
   test('config without dbclient should throw error', function(t) {
     var config = {
       esclient: {},
