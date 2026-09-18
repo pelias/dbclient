@@ -39,7 +39,7 @@
     "@hapi/joi": "^16.0.0",
     "elasticsearch": "^16.0.0",
     "pelias-config": "^7.0.0",
-    "pelias-logger": "^1.2.1",
+    "pelias-logger": "^2.0.0",
     "through2": "^3.0.0"
   },
   "pre-commit": [
