@@ -322,6 +322,58 @@ module.exports.tests.validate = function(test, common) {
 
   });
 
+  test('config with non-array schema.excludedFields should throw error', function(t) {
+    [null, 17, 'popularity', {}, true, [17]].forEach((value) => {
+      var config = {
+        dbclient: {
+          statFrequency: 1,
+          batchSize: 500
+        },
+        esclient: {},
+        schema: {
+          indexName: 'example_index',
+          excludedFields: value
+        }
+      };
+
+      t.throws(function() {
+        configValidation.validate(config);
+      }, /"schema.excludedFields(\[0\])?" must be/);
+    });
+
+    t.end();
+
+  });
+
+  test('config with schema.excludedFields and other schema keys should not throw error', function(t) {
+    var config = {
+      dbclient: {
+        statFrequency: 1,
+        batchSize: 500
+      },
+      esclient: {},
+      schema: {
+        indexName: 'example_index',
+        icuTokenizer: true,
+        unstoredFields: ['addendum'],
+        excludedFields: ['popularity', 'parent.county_a']
+      }
+    };
+
+    t.doesNotThrow(function() {
+      proxyquire('../src/configValidation', {
+        'elasticsearch': {
+          Client: function() {
+            return { indices: { exists: (indexName, cb) => { cb(false, true); } } };
+          }
+        }
+      }).validate(config);
+    }, 'no error should have been thrown');
+
+    t.end();
+
+  });
+
   test('valid config with existing index should not throw error', function(t) {
     var config = {
       dbclient: {
