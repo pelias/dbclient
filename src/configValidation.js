@@ -9,7 +9,11 @@ const elasticsearch = require('elasticsearch');
 const schema = Joi.object().keys({
   dbclient: Joi.object().required().keys({
     statFrequency: Joi.number().integer().min(0).required(),
-    batchSize: Joi.number().integer().min(0).required()
+    batchSize: Joi.number().integer().min(0).required(),
+    flooding: Joi.object().keys({
+      pause: Joi.number().integer().min(1),
+      resume: Joi.number().integer().min(0)
+    })
   }),
   esclient: Joi.object().required().keys({
     requestTimeout: Joi.number().integer().min(0)

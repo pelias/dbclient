@@ -1,5 +1,9 @@
 {
   "dbclient": {
-    "batchSize": 1000
+    "batchSize": 1000,
+    "flooding": {
+      "pause": 9,
+      "resume": 4
+    }
   }
 }

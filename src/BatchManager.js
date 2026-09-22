@@ -1,15 +1,21 @@
 const Batch = require('./Batch');
 const transaction = require('./transaction');
 const pelias_logger = require( 'pelias-logger' );
+const config = require('./config');
 
 const Stats = require('./stats');
 
 function BatchManager( opts ){
   // manager variable options
   this._opts = opts || {};
+
+  // how many bulk requests may be in flight before the stream is paused, and
+  // how far it must drain before it resumes. together with batchSize this sets
+  // the ceiling an importer can reach: pause * batchSize / bulk latency records
+  // per second, so it is worth tuning against a given elasticsearch
   if( !this._opts.flooding ){ this._opts.flooding = {}; }
-  if( !this._opts.flooding.pause ){ this._opts.flooding.pause = 5; }
-  if( !this._opts.flooding.resume ){ this._opts.flooding.resume = 2; }
+  if( !this._opts.flooding.pause ){ this._opts.flooding.pause = config.get('flooding.pause') || 5; }
+  if( !this._opts.flooding.resume ){ this._opts.flooding.resume = config.get('flooding.resume') || 2; }
 
   // set up logger
   const logger_name = this._opts.name ? `dbclient-${this._opts.name}` : 'dbclient';

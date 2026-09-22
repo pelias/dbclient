@@ -92,6 +92,33 @@ stream.on('finish', () => {
 
 ```
 
+## Configuration
+
+Settings are read from the `dbclient` section of your `pelias.json`:
+
+```javascript
+{
+  "dbclient": {
+    "statFrequency": 10000,
+    "batchSize": 500,
+    "flooding": {
+      "pause": 5,
+      "resume": 2
+    }
+  }
+}
+```
+
+| setting | default | meaning |
+|---|---|---|
+| `statFrequency` | 10000 | how often, in milliseconds, progress is logged |
+| `batchSize` | 500 | documents per bulk request |
+| `flooding.pause` | 5 | bulk requests allowed in flight before the stream is paused |
+| `flooding.resume` | 2 | in-flight requests the stream drains to before resuming |
+
+Any of these can also be passed directly to the stream factory, which takes
+priority over the configuration file.
+
 ## Contributing
 
 Please fork and pull request against upstream master on a feature branch.
