@@ -13,14 +13,18 @@ function wrapper( client, parent_logger ){
       return cb( 'reached max retries' );
     }
 
-    // reseve some memory for the bulk index body
+    // reserve some memory for the bulk index body, and remember which
+    // slot each payload entry belongs to, since on a retry this list is
+    // a subset of batch._slots and the two are no longer index-aligned
     var payload = [];
+    var slotIndexes = [];
 
     // map task object to bulk index format
-    batch._slots.forEach( function( task ){
+    batch._slots.forEach( function( task, index ){
       // filter only tasks that havn't been saved already
       if( task.status > 201 ){
         payload.push( task.cmd, task.data );
+        slotIndexes.push( index );
       }
     });
 
@@ -50,15 +54,15 @@ function wrapper( client, parent_logger ){
       // update batch items with response status
       else {
 
-        // console.log( resp.items.length, batch._slots.length, payload.length );
-
         resp.items.forEach( function( item, i ){
 
           var action = item.hasOwnProperty('create') ? item.create : item.index;
 
-          var task = batch._slots[i];
-          batch._slots[i].status = parseInt( action.status, 10 ) || 888;
-          // console.log( 'set task status', task.status, JSON.stringify( action, null, 2 ) );
+          // map the response item back to its original slot, since on a
+          // retry slotIndexes[i] may not equal i
+          var slotIndex = slotIndexes[i];
+          var task = batch._slots[slotIndex];
+          task.status = parseInt( action.status, 10 ) || 888;
 
           if( task.status > 201 ){
             logger.error( '[' + action.status + ']', action.error );
