@@ -1,0 +1,10 @@
+{
+  "dbclient": {
+    "batchSize": 1000,
+    "retry": {
+      "max": 3,
+      "baseDelay": 1,
+      "maxDelay": 2
+    }
+  }
+}

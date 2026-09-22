@@ -13,6 +13,11 @@ const schema = Joi.object().keys({
     flooding: Joi.object().keys({
       pause: Joi.number().integer().min(1),
       resume: Joi.number().integer().min(0)
+    }),
+    retry: Joi.object().keys({
+      max: Joi.number().integer().min(0),
+      baseDelay: Joi.number().integer().min(0),
+      maxDelay: Joi.number().integer().min(0)
     })
   }),
   esclient: Joi.object().required().keys({

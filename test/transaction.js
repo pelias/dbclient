@@ -1,5 +1,7 @@
+const path = require('path');
 const transaction = require('../src/transaction');
 const Batch = require('../src/Batch');
+const config = require('../src/config');
 
 module.exports.tests = {};
 
@@ -91,6 +93,10 @@ module.exports.tests.retryIndexAlignment = function (test) {
 
 module.exports.tests.recoversAfterMultipleFailingRounds = function (test) {
   test('a batch can go through multiple rounds of partial failure and still converge to success', function (t) {
+    // use short backoff delays so the test isn't slow
+    process.env.PELIAS_CONFIG = path.resolve(__dirname + '/retry-config.json');
+    config.reload();
+
     const batch = makeBatch(4);
     var calls = 0;
 
@@ -147,6 +153,33 @@ module.exports.tests.recoversAfterMultipleFailingRounds = function (test) {
       t.equals(batch._slots[1].status, 201, 'slot 1 eventually succeeded');
       t.equals(batch._slots[2].status, 201, 'slot 2 untouched by retries');
       t.equals(batch._slots[3].status, 201, 'slot 3 succeeded on first retry');
+
+      delete process.env.PELIAS_CONFIG;
+      config.reload();
+      t.end();
+    });
+  });
+};
+
+module.exports.tests.maxRetries = function (test) {
+  test('batch is dropped after max retries are exhausted', function (t) {
+    process.env.PELIAS_CONFIG = path.resolve(__dirname + '/retry-config.json');
+    config.reload();
+
+    const batch = makeBatch(1);
+
+    const client = {
+      bulk: function (req, cb) {
+        cb(undefined, { items: [{ index: { status: 429 } }] });
+      }
+    };
+
+    transaction(client, silentLogger)(batch, function (err) {
+      t.ok(err, 'error returned once max retries reached');
+      t.equals(batch.retries, 3, 'retried up to the configured max');
+
+      delete process.env.PELIAS_CONFIG;
+      config.reload();
       t.end();
     });
   });
@@ -157,6 +190,9 @@ module.exports.tests.statusRecoversAfterTimeout = function (test) {
   // es request timeout, then fully succeeded on retry, but the ratcheting
   // batch.status bug made the client falsely treat it as still failed
   test('a request-timeout round followed by a fully successful retry does not falsely error', function (t) {
+    process.env.PELIAS_CONFIG = path.resolve(__dirname + '/retry-config.json');
+    config.reload();
+
     const batch = makeBatch(3);
     var calls = 0;
 
@@ -191,6 +227,9 @@ module.exports.tests.statusRecoversAfterTimeout = function (test) {
       t.notOk(err, 'batch succeeds, no false-positive error');
       t.equals(calls, 2, 'resolved in 2 bulk calls, no phantom retry');
       t.equals(batch.status, 201, 'batch status reflects the actual outcome, not a stale 500');
+
+      delete process.env.PELIAS_CONFIG;
+      config.reload();
       t.end();
     });
   });

@@ -1,15 +1,27 @@
 const pelias_logger = require( 'pelias-logger' );
+const config = require('./config');
 
-var max_retries = 5;
+// exponential backoff with jitter, so a batch of retries doesn't all
+// hammer elasticsearch again at the exact same moment
+function backoff( retries, base_delay, max_delay ){
+  var delay = Math.min( max_delay, base_delay * Math.pow( 2, retries ) );
+  return Math.round( delay * ( 0.5 + Math.random() * 0.5 ) );
+}
 
 function wrapper( client, parent_logger ){
 
   const logger = parent_logger ? parent_logger : pelias_logger.get('dbclient');
+  const max_retries = config.get('retry.max', 5);
+  const base_delay = config.get('retry.baseDelay', 1000);
+  const max_delay = config.get('retry.maxDelay', 30000);
 
   function transaction( batch, cb ){
 
     // reached max retries
     if( batch.retries >= max_retries ){
+      var stillFailing = batch._slots.filter( function( task ){ return task.status > 201; } );
+      var ids = stillFailing.map( function( task ){ return task.cmd.index._id; } );
+      logger.error( 'reached max retries, dropping batch', '[' + batch.status + ']', ids );
       return cb( 'reached max retries' );
     }
 
@@ -85,9 +97,10 @@ function wrapper( client, parent_logger ){
 
       // retry batch
       if( batch.status > 201 ){
+        var delay = backoff( batch.retries, base_delay, max_delay );
         batch.retries++;
-        logger.info( 'retrying batch', '[' + batch.status + ']' );
-        return transaction( batch, cb );
+        logger.info( 'retrying batch', '[' + batch.status + ']', 'in ' + delay + 'ms' );
+        return setTimeout( function(){ transaction( batch, cb ); }, delay );
       }
 
       // done done
