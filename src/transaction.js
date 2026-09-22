@@ -71,12 +71,16 @@ function wrapper( client, parent_logger ){
           //   delete task.cmd; // reclaim memory
           //   delete task.data; // reclaim memory
           // }
-
-          // set batch status to highest response code
-          if( batch.status === 999 || task.status > batch.status ){
-            batch.status = task.status;
-          }
         });
+
+        // batch status is the highest status across ALL slots, recomputed
+        // fresh each round - a slot that succeeds on retry must be able to
+        // bring the batch status back down, otherwise a batch that has
+        // fully succeeded keeps retrying forever because of a status seen
+        // in an earlier round
+        batch.status = batch._slots.reduce( function( max, task ){
+          return task.status > max ? task.status : max;
+        }, 0 );
       }
 
       // retry batch
