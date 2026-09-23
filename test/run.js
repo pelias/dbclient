@@ -8,6 +8,7 @@ var tests = [
   require('./configValidation'),
   require('./Batch'),
   require('./BatchManager'),
+  require('./transaction'),
   require('./excludeFields'),
   require('./fileSink')
   // other tests go here
