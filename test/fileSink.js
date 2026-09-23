@@ -93,6 +93,22 @@ module.exports.tests.writes_ndjson = function(test, common) {
       t.end();
     });
   });
+
+  test('fileSink: removes excluded fields', function(t) {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pelias-filesink-'));
+    const stream = fileSinkFactory(tmpDir, { excludedFields: ['popularity'] });
+
+    stream.write({ _index: 'pelias', _id: 'a', data: { name: 'foo', layer: 'venue', popularity: 10 } });
+
+    stream.end(function() {
+      const files = fs.readdirSync(tmpDir).filter(f => f.endsWith('.ndjson'));
+      const line = JSON.parse(fs.readFileSync(path.join(tmpDir, files[0]), 'utf8'));
+      t.deepEqual(line, { name: 'foo', layer: 'venue' }, 'popularity removed');
+
+      fs.rmSync(tmpDir, { recursive: true });
+      t.end();
+    });
+  });
 };
 
 module.exports.all = function(tape, common) {

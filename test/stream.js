@@ -51,6 +51,21 @@ module.exports.tests.functional_example = function(test, common) {
     stream.end();
 
   });
+
+  test('excluded fields are removed before bulk indexing', function(t) {
+    var client = {
+      bulk: function( batch, cb ){
+        t.deepEqual(batch.body[1], { name: 'foo' }, 'popularity removed from document');
+        setImmediate(() => cb(null, { items: [ { index: { status: 201 } } ] }));
+      },
+      close: function(){}
+    };
+
+    var stream = factory({ client: client, excludedFields: ['popularity'] });
+    stream.on('finish', () => t.end());
+    stream.write({ _index: 'foo', _id: 'foo', data: { name: 'foo', popularity: 10 } });
+    stream.end();
+  });
 };
 
 module.exports.all = function (tape, common) {
