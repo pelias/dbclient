@@ -1,7 +1,9 @@
 'use strict';
 
+const path = require('path');
 const proxyquire = require('proxyquire').noCallThru();
 const through = require('through2');
+const config = require('../src/config');
 
 module.exports.tests = {};
 
@@ -13,6 +15,11 @@ module.exports.tests.functional_example = function(test, common) {
   });
 
   test('functional example', function(t) {
+
+    // the fake bulk response below is invalid, so the batch is retried until
+    // the limit is reached: use short backoff delays so the test isn't slow
+    process.env.PELIAS_CONFIG = path.resolve(__dirname + '/retry-config.json');
+    config.reload();
 
     let finished = false;
 
@@ -32,7 +39,7 @@ module.exports.tests.functional_example = function(test, common) {
         setTimeout( function(){
           finished = true;
           cb(null);
-        }, 500 );
+        }, 10 );
       },
       close: function(){
         t.equal( true, true, 'client closed' );
@@ -40,6 +47,10 @@ module.exports.tests.functional_example = function(test, common) {
     };
 
     var stream = factory({ client: client });
+    assertStream.on('finish', () => {
+      delete process.env.PELIAS_CONFIG;
+      config.reload();
+    });
 
     stream.pipe(assertStream);
     stream.write({
