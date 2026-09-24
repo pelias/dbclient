@@ -25,7 +25,7 @@ const schema = Joi.object().keys({
   }).unknown(true),
   schema: Joi.object().keys({
     indexName: Joi.string().required(),
-    excludedFields: Joi.array().items(Joi.string())
+    unmappedFields: Joi.array().items(Joi.string())
   }).unknown(true)
 }).unknown(true);
 

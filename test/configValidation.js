@@ -322,7 +322,7 @@ module.exports.tests.validate = function(test, common) {
 
   });
 
-  test('config with non-array schema.excludedFields should throw error', function(t) {
+  test('config with non-array schema.unmappedFields should throw error', function(t) {
     [null, 17, 'popularity', {}, true, [17]].forEach((value) => {
       var config = {
         dbclient: {
@@ -332,20 +332,20 @@ module.exports.tests.validate = function(test, common) {
         esclient: {},
         schema: {
           indexName: 'example_index',
-          excludedFields: value
+          unmappedFields: value
         }
       };
 
       t.throws(function() {
         configValidation.validate(config);
-      }, /"schema.excludedFields(\[0\])?" must be/);
+      }, /"schema.unmappedFields(\[0\])?" must be/);
     });
 
     t.end();
 
   });
 
-  test('config with schema.excludedFields and other schema keys should not throw error', function(t) {
+  test('config with schema.unmappedFields and other schema keys should not throw error', function(t) {
     var config = {
       dbclient: {
         statFrequency: 1,
@@ -355,8 +355,8 @@ module.exports.tests.validate = function(test, common) {
       schema: {
         indexName: 'example_index',
         icuTokenizer: true,
-        unstoredFields: ['addendum'],
-        excludedFields: ['popularity', 'parent.county_a']
+        sourceExcludedFields: ['addendum'],
+        unmappedFields: ['popularity', 'parent.county_a']
       }
     };
 
