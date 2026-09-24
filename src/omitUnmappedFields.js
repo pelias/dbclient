@@ -46,12 +46,12 @@ function omitTree(doc, tree) {
 }
 
 /**
- * returns a function which removes fields listed in `schema.excludedFields`
+ * returns a function which removes fields listed in `schema.unmappedFields`
  * from a document, since they are absent from the Elasticsearch mapping.
  */
-function excludeFields(fields) {
+function omitUnmappedFields(fields) {
   if (!fields) {
-    fields = _.get(peliasConfig.generate(), 'schema.excludedFields', []);
+    fields = _.get(peliasConfig.generate(), 'schema.unmappedFields', []);
   }
 
   if (_.isEmpty(fields)) {
@@ -62,4 +62,4 @@ function excludeFields(fields) {
   return (doc) => omitTree(doc, tree);
 }
 
-module.exports = excludeFields;
+module.exports = omitUnmappedFields;

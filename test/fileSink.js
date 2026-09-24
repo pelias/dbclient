@@ -94,9 +94,9 @@ module.exports.tests.writes_ndjson = function(test, common) {
     });
   });
 
-  test('fileSink: removes excluded fields', function(t) {
+  test('fileSink: removes unmapped fields', function(t) {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pelias-filesink-'));
-    const stream = fileSinkFactory(tmpDir, { excludedFields: ['popularity'] });
+    const stream = fileSinkFactory(tmpDir, { unmappedFields: ['popularity'] });
 
     stream.write({ _index: 'pelias', _id: 'a', data: { name: 'foo', layer: 'venue', popularity: 10 } });
 

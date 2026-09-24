@@ -6,13 +6,13 @@ const path = require('path');
 const through = require('through2');
 const pelias_logger = require('pelias-logger');
 const Stats = require('./stats');
-const excludeFields = require('./excludeFields');
+const omitUnmappedFields = require('./omitUnmappedFields');
 
 function fileSinkFactory(outputDirectory, opts) {
   opts = opts || {};
   const logger = pelias_logger.get(opts.name ? `dbclient-${opts.name}` : 'dbclient');
   const stats = new Stats(logger);
-  const exclude = excludeFields(opts.excludedFields);
+  const omitUnmapped = omitUnmappedFields(opts.unmappedFields);
 
   const prefix = opts.name ? `pelias_${opts.name}` : 'pelias';
   const filename = `${prefix}_${Date.now()}.ndjson`;
@@ -28,7 +28,7 @@ function fileSinkFactory(outputDirectory, opts) {
   }
 
   return through.obj(function(item, enc, next) {
-    const line = JSON.stringify(exclude(item.data)) + '\n';
+    const line = JSON.stringify(omitUnmapped(item.data)) + '\n';
     getWriteStream().write(line, function(err) {
       if (err) {
         logger.error('fileSink write error', err);

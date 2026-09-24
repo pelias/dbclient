@@ -9,7 +9,7 @@ var tests = [
   require('./Batch'),
   require('./BatchManager'),
   require('./transaction'),
-  require('./excludeFields'),
+  require('./omitUnmappedFields'),
   require('./fileSink')
   // other tests go here
 ];

@@ -1,17 +1,17 @@
 
 var through = require('through2'),
     BatchManager = require('./BatchManager'),
-    excludeFields = require('./excludeFields');
+    omitUnmappedFields = require('./omitUnmappedFields');
 
 function streamFactory( opts ){
   opts = opts || {};
   if( !opts.client ){ opts.client = require('./client')(); }
 
   var manager = new BatchManager( opts );
-  var exclude = excludeFields( opts.excludedFields );
+  var omitUnmapped = omitUnmappedFields( opts.unmappedFields );
 
   var stream = through.obj( function( item, enc, next ){
-    manager.push( Object.assign( {}, item, { data: exclude( item.data ) } ), next );
+    manager.push( Object.assign( {}, item, { data: omitUnmapped( item.data ) } ), next );
   }, function(next) {
     manager.end(next);
   });

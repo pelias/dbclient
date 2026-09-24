@@ -52,7 +52,7 @@ module.exports.tests.functional_example = function(test, common) {
 
   });
 
-  test('excluded fields are removed before bulk indexing', function(t) {
+  test('unmapped fields are removed before bulk indexing', function(t) {
     var client = {
       bulk: function( batch, cb ){
         t.deepEqual(batch.body[1], { name: 'foo' }, 'popularity removed from document');
@@ -61,7 +61,7 @@ module.exports.tests.functional_example = function(test, common) {
       close: function(){}
     };
 
-    var stream = factory({ client: client, excludedFields: ['popularity'] });
+    var stream = factory({ client: client, unmappedFields: ['popularity'] });
     stream.on('finish', () => t.end());
     stream.write({ _index: 'foo', _id: 'foo', data: { name: 'foo', popularity: 10 } });
     stream.end();
